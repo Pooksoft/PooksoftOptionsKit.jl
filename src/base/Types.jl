@@ -16,7 +16,7 @@ struct PSCallOptionContract <: PSAbstractOptionContract
     expirationDate::Date
     premimumValue::Float64
 
-    function PSCallOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64)
+    function PSCallOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64; sense::Symbol=:buy)
         this = new(assetSymbol, strikePrice, expirationDate, premimumValue)
     end
 end
@@ -28,8 +28,9 @@ struct PSPutOptionContract <: PSAbstractOptionContract
     strikePrice::Float64
     expirationDate::Date
     premimumValue::Float64
+    sense::Symbol
 
-    function PSPutOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64)
-        this = new(assetSymbol, strikePrice, expirationDate, premimumValue)
+    function PSPutOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64; sense::Symbol=:buy)
+        this = new(assetSymbol, strikePrice, expirationDate, premimumValue, sense)
     end
 end
