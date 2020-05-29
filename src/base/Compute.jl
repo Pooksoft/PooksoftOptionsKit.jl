@@ -81,7 +81,8 @@ function compute_put_option_profit_loss_at_expiration(sense::Symbol, strikePrice
     return PSResult{Array{Float64,2}}(profit_loss_array)
 end
 
-function compute_call_option_profit_loss_at_expiration(optionContract::PSCallOptionContract, assetPriceStart::Float64, assetPriceStop::Float64; number_of_price_steps::Int64=1000, number_of_contracts::Int64=1)::(Union{PSResult{T}, Nothing} where T<:Any)
+function compute_call_option_profit_loss_at_expiration(optionContract::PSCallOptionContract, assetPriceStart::Float64, assetPriceStop::Float64; 
+    number_of_price_steps::Int64=1000, number_of_contracts::Int64=1)::(Union{PSResult{T}, Nothing} where T<:Any)
 
     # get data from optionContract -
     sense = optionContract.sense
@@ -89,5 +90,19 @@ function compute_call_option_profit_loss_at_expiration(optionContract::PSCallOpt
     premiumValue = optionContract.premimumValue
 
     # call -
-    return compute_call_option_profit_loss_at_expiration(sense,strikePrice,premiumValue,assetPriceStart,assetPriceStop; number_of_price_steps=number_of_price_steps,number_of_contracts=number_of_contracts)
+    return compute_call_option_profit_loss_at_expiration(sense,strikePrice,premiumValue,assetPriceStart,assetPriceStop; 
+        number_of_price_steps=number_of_price_steps,number_of_contracts=number_of_contracts)
+end
+
+function compute_put_option_profit_loss_at_expiration(optionContract::PSPutOptionContract, assetPriceStart::Float64, assetPriceStop::Float64; 
+    number_of_price_steps::Int64=1000, number_of_contracts::Int64=1)::(Union{PSResult{T}, Nothing} where T<:Any)
+
+    # get data from optionContract -
+    sense = optionContract.sense
+    strikePrice = optionContract.strikePrice
+    premiumValue = optionContract.premimumValue
+
+    # call -
+    return compute_put_option_profit_loss_at_expiration(sense,strikePrice,premiumValue,assetPriceStart,assetPriceStop; 
+        number_of_price_steps=number_of_price_steps,number_of_contracts=number_of_contracts)
 end
