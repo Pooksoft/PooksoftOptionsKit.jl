@@ -2,7 +2,33 @@ function compute_call_option_profit_loss_at_expiration(sense::Symbol, strikePric
     number_of_price_steps::Int64 = 1000, number_of_contracts::Int64 = 1)::(Union{PSResult{T}, Nothing} where T<:Any)
 
     # checks -
-    # ...
+    if (is_sense_legit(sense) == false)
+        throw(error("Ooops! The sense arguement must be either :buy or :sell. We've got: :$(sense)"))
+    end
+
+    if (is_postive_value(strikePrice) == false)
+        throw(error("Ooops! The strike price must be a positive value."))
+    end
+
+    if (is_postive_value(premiumValue) == false)
+        throw(error("Ooops! The premimum value must be a positive value."))
+    end
+
+    if (is_postive_value(assetPriceStart) == false)
+        throw(error("Ooops! The starting asset price must be a positive value."))
+    end
+
+    if (is_postive_value(assetPriceStop) == false)
+        throw(error("Ooops! The ending asset price must be a positive value."))
+    end
+
+    if (is_postive_value(number_of_price_steps) == false)
+        throw(error("Ooops! The number of price steps must be a positive value."))
+    end
+
+    if (is_postive_value(number_of_price_steps) == false)
+        throw(error("Ooops! The number of contracts must be a positive value."))
+    end
 
     # initialize -
     profit_loss_array = zeros(number_of_price_steps,3)
@@ -42,9 +68,34 @@ end
 function compute_put_option_profit_loss_at_expiration(sense::Symbol, strikePrice::Float64, premiumValue::Float64, assetPriceStart::Float64, assetPriceStop::Float64; 
     number_of_price_steps::Int64 = 1000, number_of_contracts::Int64 = 1)::(Union{PSResult{T}, Nothing} where T<:Any)
 
-
     # checks -
-    # ...
+    if (is_sense_legit(sense) == false)
+        throw(error("Ooops! The sense arguement must be either :buy or :sell. We've got: :$(sense)"))
+    end
+
+    if (is_postive_value(strikePrice) == false)
+        throw(error("Ooops! The strike price must be a positive value."))
+    end
+
+    if (is_postive_value(premiumValue) == false)
+        throw(error("Ooops! The premimum value must be a positive value."))
+    end
+
+    if (is_postive_value(assetPriceStart) == false)
+        throw(error("Ooops! The starting asset price must be a positive value."))
+    end
+
+    if (is_postive_value(assetPriceStop) == false)
+        throw(error("Ooops! The ending asset price must be a positive value."))
+    end
+
+    if (is_postive_value(number_of_price_steps) == false)
+        throw(error("Ooops! The number of price steps must be a positive value."))
+    end
+
+    if (is_postive_value(number_of_price_steps) == false)
+        throw(error("Ooops! The number of contracts must be a positive value."))
+    end
 
     # initialize -
     profit_loss_array = zeros(number_of_price_steps,3)
@@ -103,6 +154,6 @@ function compute_put_option_profit_loss_at_expiration(optionContract::PSPutOptio
     premiumValue = optionContract.premimumValue
 
     # call -
-    return compute_put_option_profit_loss_at_expiration(sense,strikePrice,premiumValue,assetPriceStart,assetPriceStop; 
+    return compute_put_option_profit_loss_at_expiration(sense,strikePrice, premiumValue, assetPriceStart, assetPriceStop; 
         number_of_price_steps=number_of_price_steps,number_of_contracts=number_of_contracts)
 end

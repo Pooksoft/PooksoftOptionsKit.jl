@@ -7,4 +7,6 @@ using Dates
 
 # include my code -
 include("./base/Types.jl")
+include("./base/Checks.jl")
+include("./base/Models.jl")
 include("./base/Compute.jl")
