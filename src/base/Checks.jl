@@ -13,7 +13,7 @@ function is_sense_legit(testSense::Symbol)::Bool
     return false
 end
 
-function is_postive_value(value::T where T<:Number)::Bool
+function is_positive_value(value::T where T<:Number)::Bool
     
     # we should have only positive values -
     if (sign(value)==1.0 || sign(value) == 1)
