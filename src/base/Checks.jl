@@ -16,7 +16,7 @@ end
 function is_positive_value(value::T where T<:Number)::Bool
     
     # we should have only positive values -
-    if (sign(value)==1.0 || sign(value) == 1)
+    if (sign(value)==1.0 || sign(value) == 1 || sign(value) == 0 || sign(value) == 0.0)
         return true
     end
 
