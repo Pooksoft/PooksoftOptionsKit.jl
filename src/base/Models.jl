@@ -18,19 +18,17 @@ function crr_am_put(S, K, r, σ, t, N)
     return Z[1]
 end
 
-function build_tree_node(priceArray::Array{Float64,1}, root::PSBinaryPriceTreeNode, nodeIndex::Int64, maxCount::Int64)
+function build_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSBinaryPriceTreeNode}, nodeIndex::Int64, maxCount::Int64)
 
     if (nodeIndex <= maxCount)
         
-        @show (nodeIndex, maxCount)
-
         # setup -
         tmpNode = PSBinaryPriceTreeNode()
         tmpNode.price = priceArray[nodeIndex]
         
         # Put dummy values on the L and R nodes -
-        tmpNode.left = PSBinaryPriceTreeNode()
-        tmpNode.right = PSBinaryPriceTreeNode()
+        tmpNode.left = nothing
+        tmpNode.right = nothing
 
         # setup the root -
         root = tmpNode
