@@ -8,6 +8,26 @@ end
 
 abstract type PSAbstractAsset end
 
+mutable struct PSBinomialPriceTreeNode
+
+    # data -
+    price::Float64
+    nextUpNode::Union{Nothing, PSBinomialPriceTreeNode}
+    nextDownNode::Union{Nothing, PSBinomialPriceTreeNode}
+
+    # constructor -
+    function PSBinomialPriceTreeNode()
+        this = new()
+    end
+end
+
+struct PSBinomialPricingTree
+    root::PSBinomialPriceTreeNode
+    function PSBinomialPricingTree(root::PSBinomialPriceTreeNode)
+        this = new(root)
+    end
+end
+
 struct PSEquityAsset <: PSAbstractAsset
 
     # data -
