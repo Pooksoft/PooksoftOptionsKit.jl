@@ -18,10 +18,42 @@ function crr_am_put(S, K, r, σ, t, N)
     return Z[1]
 end
 
+function update_price_array!(priceArray::Array{Float64,1}, up::Float64, down::Float64)
+
+    # what is the size of the array?
+    number_of_prices = length(priceArray)
+
+    # main loop -
+    for index = 1:number_of_prices
+
+        # get the basePrice -
+        basePrice = priceArray[index]
+
+        # compute the prices -
+        down_price = basePrice*down
+        up_price = basePrice*up
+    
+        # add the prices to the array -
+        left_index = 2*(index -1) + 2
+        right_index = 2*(index - 1) + 3
+
+        # note - we need to check that we don't write into the array past the end
+        if (left_index<=number_of_prices)
+            priceArray[left_index] = down_price
+        end
+
+        if (right_index<=number_of_prices)
+            priceArray[right_index] = up_price
+        end
+    end
+end
+
 function build_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSBinaryPriceTreeNode}, nodeIndex::Int64, maxCount::Int64)
 
     if (nodeIndex <= maxCount)
         
+        @show (nodeIndex,maxCount)
+
         # setup -
         tmpNode = PSBinaryPriceTreeNode()
         tmpNode.price = priceArray[nodeIndex]
@@ -44,16 +76,23 @@ function build_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSBi
     return root
 end
 
-function build_binary_option_pricing_tree(basePrice::Float64, riskFreeRate::Float64, dividendRate::Float64, 
+function build_binary_price_tree(basePrice::Float64, riskFreeRate::Float64, dividendRate::Float64, 
     volatility::Float64, timeToExercise::Float64, numberOfLevels::Int)
 
     # checks -
     # ....
 
+    # compute up and down perturbations -
+    Δt = timeToExercise/numberOfLevels
+    U = exp(volatility * √Δt)
+    D = 1 / U
+
     # compute price array -
     number_of_elements = (2^numberOfLevels) - 1
-    priceArray = 30*rand(number_of_elements)
-    
+    priceArray = zeros(number_of_elements)
+    priceArray[1] = basePrice
+    update_price_array!(priceArray,U,D)
+
     # build the root node -
     root = PSBinaryPriceTreeNode()
 
