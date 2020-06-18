@@ -1,4 +1,4 @@
-function function crr_am_put(S, K, r, σ, t, N)
+function crr_am_put(S, K, r, σ, t, N)
     Δt = t / N
     U = exp(σ * √Δt)
     D = 1 / U
@@ -18,57 +18,50 @@ function function crr_am_put(S, K, r, σ, t, N)
     return Z[1]
 end
 
-function build_binomial_option_pricing_tree(basePrice::Float64, riskFreeRate::Float64, dividendRate::Float64, 
+function build_tree_node(priceArray::Array{Float64,1}, root::PSBinaryPriceTreeNode, nodeIndex::Int64, maxCount::Int64)
+
+    if (nodeIndex <= maxCount)
+        
+        @show (nodeIndex, maxCount)
+
+        # setup -
+        tmpNode = PSBinaryPriceTreeNode()
+        tmpNode.price = priceArray[nodeIndex]
+        
+        # Put dummy values on the L and R nodes -
+        tmpNode.left = PSBinaryPriceTreeNode()
+        tmpNode.right = PSBinaryPriceTreeNode()
+
+        # setup the root -
+        root = tmpNode
+
+        # insert L (down price)
+        root.left = build_tree_node(priceArray, root.left, 2*(nodeIndex -1) + 2, maxCount)
+
+        # insert R (up price)
+        root.right = build_tree_node(priceArray, root.right, 2*(nodeIndex - 1) + 3, maxCount)
+    end
+
+    # return -
+    return root
+end
+
+function build_binary_option_pricing_tree(basePrice::Float64, riskFreeRate::Float64, dividendRate::Float64, 
     volatility::Float64, timeToExercise::Float64, numberOfLevels::Int)
 
     # checks -
     # ....
 
-    # compute delta T -
-    dT = (timeToExercise/numberOfLevels)
-
-    # compute up, down and p for each step -
-    up = exp(volatility*sqrt(dT))
-    down = exp(-1*volatility*sqrt(dT))
-    pup = (exp((riskFreeRate - dividendRate)*dT) - down)/(up - down)
-    pdown = 1 - pup
-
-    # generate a root node -
-    rootNode = PSBinomialPriceTreeNode()
-    rootNode.price = basePrice
-
-    # build the tree -
-    currentNode = rootNode
-    currentPrice = rootNode.price
-    for tree_level_index = 1:numberOfLevels
-        
-        # get tree nodes at 
-
-        # number of nodes -
-        number_of_nodes = (2^tree_level_index)
-        for node_index = 1:number_of_nodes
-            
-            # if is odd => up
-            if (isodd(node_index) == true) 
-                
-                # new_node -
-                new_node = PSBinomialPriceTreeNode()
-                new_node.price = currentPrice*up
-
-                # attach -
-                currentNode.nextUpNode = new_node
-            else
-                
-                # new_node -
-                new_node = PSBinomialPriceTreeNode()
-                new_node.price = currentPrice*down
-
-                # attach -
-                currentNode.nextDownNode = new_node
-            end
-        end
-    end
+    # compute price array -
+    number_of_elements = (2^numberOfLevels) - 1
+    priceArray = 30*rand(number_of_elements)
     
+    # build the root node -
+    root = PSBinaryPriceTreeNode()
+
+    # assemble tree -
+    root = build_tree_node(priceArray,root,1,number_of_elements)
+
     # return -
-    return PSBinomialPricingTree(rootNode)
+    return root
 end
