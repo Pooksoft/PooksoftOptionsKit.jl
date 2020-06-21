@@ -14,10 +14,64 @@ mutable struct PSBinaryPriceTreeNode
     price::Float64
     left::Union{Nothing, PSBinaryPriceTreeNode}
     right::Union{Nothing, PSBinaryPriceTreeNode}
-
+    intrinsicValue::Union{Nothing,Float64}
+    totalValue::Float64
+    
     # constructor -
     function PSBinaryPriceTreeNode()
         this = new()
+    end
+end
+
+struct PSBinaryPriceTree
+
+    # data -
+    root::PSBinaryPriceTreeNode
+    Δt::Float64
+    U::Float64
+    D::Float64
+    depth::Int64
+
+    function PSBinaryPriceTree(root::PSBinaryPriceTreeNode,Δt::Float64,U::Float64,D::Float64,depth::Int64)
+        this = new(root,Δt,U,D,depth)
+    end
+end
+
+
+mutable struct PSTernaryPriceTreeNode
+
+    # data -
+    price::Float64
+    left::Union{Nothing, PSTernaryPriceTreeNode}
+    center::Union{Nothing, PSTernaryPriceTreeNode}
+    right::Union{Nothing, PSTernaryPriceTreeNode}
+    intrinsicValue::Union{Nothing,Float64}
+
+    # constructor -
+    function PSTernaryPriceTreeNode()
+        this = new()
+    end
+end
+
+struct PSBinaryCallOptionValueTree
+
+    # holds the root of the binary price tree -
+    root::PSBinaryPriceTreeNode
+
+    # constructor -
+    function PSBinaryCallOptionValueTree(node::PSBinaryPriceTreeNode)
+        this = new(node)
+    end
+end
+
+struct PSBinaryPutOptionValueTree
+
+    # holds the root of the binary price tree -
+    root::PSBinaryPriceTreeNode
+
+    # constructor -
+    function PSBinaryPutOptionValueTree(node::PSBinaryPriceTreeNode)
+        this = new(node)
     end
 end
 
