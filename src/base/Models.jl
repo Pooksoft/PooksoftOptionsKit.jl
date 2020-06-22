@@ -82,6 +82,7 @@ function calculate_call_node_value(node::PSBinaryPriceTreeNode,strikePrice::Floa
     
     # calculate the intrinsicValue -
     node.intrinsicValue = max((price - strikePrice),0)
+    node.totalValue = max((price - strikePrice),0)      # we'll update this later -
 
     # work on my kids -
     if (node.left !== nothing && node.right !== nothing)
@@ -105,18 +106,25 @@ function calculate_put_node_value(node::PSBinaryPriceTreeNode,strikePrice::Float
     end
 end
 
-function search!(node::PSBinaryPriceTreeNode, currentDepth::Int64,targetDepth::Int64, targetSet::Set{PSBinaryPriceTreeNode})
+function compute(node::PSBinaryPriceTreeNode, probability::Float64, discountFactor::Float64, 
+    currentDepth::Int64, targetDepth::Int64)
 
     # ok - are we at the target depth?
     if (currentDepth == targetDepth)
 
         # ok, we are at the depth we need, grab my kids and put them in the target set -
-        push!(targetSet,node)
+        L = node.left.totalValue     # down
+        R = node.right.totalValue     # up
+        totalValue = discountFactor*(probability*R+(1.0 - probability)*L)
+
+        @show (currentDepth, totalValue, probability, discountFactor)
+
+        node.totalValue = totalValue
     else
         
         # ok, so we are *not* at the target depth -
-        search!(node.left,(currentDepth + 1), targetDepth, targetSet)
-        search!(node.right,(currentDepth + 1), targetDepth, targetSet)
+        compute(node.left, probability, discountFactor, (currentDepth + 1), targetDepth)
+        compute(node.right, probability, discountFactor, (currentDepth + 1), targetDepth)
     end
 end
 
@@ -138,7 +146,6 @@ function build_put_option_intrinsic_value_tree(tree::PSBinaryPriceTree, strikePr
     # return the updated tree -
     return tree
 end
-
 
 function build_ternary_price_tree(basePrice::Float64, riskFreeRate::Float64, dividendRate::Float64, 
     volatility::Float64, timeToExercise::Float64, numberOfLevels::Int)::PSTernaryPriceTreeNode
@@ -209,19 +216,16 @@ function option_contract_price(tree::PSBinaryPriceTree, riskFreeRate::Float64, d
     DF = exp(-riskFreeRate*Δt)
     maxDepth = tree.depth
 
-    
+    # process the tree -
+    depth_index_array = collect(range((maxDepth - 1),step=-1,stop=1))
+    for depth_index in depth_index_array
+        
+        # update the tree -
+        compute(tree.root, p, DF, 1, depth_index)        
+    end
 
+    # return -
+    return tree
 end
 
-function search(tree::PSBinaryPriceTree, targetDepth::Int64)::Set{PSBinaryPriceTreeNode}
-
-    # checks -
-    # ...
-
-    # init empty target set -
-    targetNodeSet = Set{PSBinaryPriceTreeNode}()
-
-    # get the root and go ...
-    return search!(tree.root,1,targetDepth,targetNodeSet)
-end
 # ----------------------------------------------------------------------------------------------------------- #
