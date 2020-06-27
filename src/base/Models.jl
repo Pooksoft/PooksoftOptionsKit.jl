@@ -143,6 +143,7 @@ function build_ternary_tree_node(priceArray::Array{Float64,1}, root::Union{Nothi
     return root
 end
 
+# Binary -
 function calculate_call_node_value(node::PSBinaryPriceTreeNode,strikePrice::Float64)
 
     # get the price -
@@ -193,6 +194,61 @@ function compute(node::PSBinaryPriceTreeNode, probability::Float64, discountFact
     end
 end
 
+# Ternary -
+function calculate_call_node_value(node::PSTernaryPriceTreeNode, strikePrice::Float64)
+
+    # get the price -
+    price = node.price
+    
+    # calculate the intrinsicValue -
+    node.intrinsicValue = max((price - strikePrice),0)
+    node.totalValue = max((price - strikePrice),0)      # we'll update this later -
+
+    # work on my kids -
+    if (node.left !== nothing && node.right !== nothing)
+        calculate_call_node_value(node.left, strikePrice)
+        calculate_call_node_value(node.center, strikePrice) 
+        calculate_call_node_value(node.right, strikePrice)    
+    end
+end
+
+function calculate_put_node_value(node::PSTernaryPriceTreeNode, strikePrice::Float64)
+
+    # get the price -
+    price = node.price
+    
+    # calculate the intrinsicValue -
+    node.intrinsicValue = max((strikePrice - price),0)
+
+    # work on my kids -
+    if (node.left !== nothing && node.right !== nothing)
+        calculate_put_node_value(node.left, strikePrice)
+        calculate_put_node_value(node.center, strikePrice)  
+        calculate_put_node_value(node.right, strikePrice)    
+    end
+end
+
+function compute(node::PSTernaryPriceTreeNode, probabilityUp::Float64, probabilityDown::Float64, discountFactor::Float64, 
+    currentDepth::Int64, targetDepth::Int64)
+
+    # ok - are we at the target depth?
+    if (currentDepth == targetDepth)
+
+        # ok, we are at the depth we need, grab my kids and put them in the target set -
+        L = node.left.totalValue        # down
+        R = node.right.totalValue       # up
+        C = node.center.totalValue      # center
+        totalValue = discountFactor*(probabilityUp*R+probabilityDown*L+(1-probabilityUp-probabilityDown)*C)
+        node.totalValue = totalValue
+    else
+        
+        # ok, so we are *not* at the target depth -
+        compute(node.left, probabilityUp, probabilityDown, discountFactor, (currentDepth + 1), targetDepth)
+        compute(node.center, probabilityUp, probabilityDown, discountFactor, (currentDepth + 1), targetDepth)
+        compute(node.right, probabilityUp, probabilityDown, discountFactor, (currentDepth + 1), targetDepth)
+    end
+end
+
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
 function build_call_option_intrinsic_value_tree(tree::PSBinaryPriceTree, strikePrice::Float64)::PSBinaryPriceTree
     
@@ -212,8 +268,26 @@ function build_put_option_intrinsic_value_tree(tree::PSBinaryPriceTree, strikePr
     return tree
 end
 
+function build_call_option_intrinsic_value_tree(tree::PSTernaryPriceTree, strikePrice::Float64)::PSTernaryPriceTree
+    
+    # update the root - walk through the tree, and calc the intrinsic values -
+    calculate_call_node_value(tree.root, strikePrice)
+
+    # return the updated tree -
+    return tree
+end
+
+function build_put_option_intrinsic_value_tree(tree::PSTernaryPriceTree, strikePrice::Float64)::PSTernaryPriceTree
+    
+    # update the root - walk through the tree, and calc the intrinsic values -
+    calculate_put_node_value(tree.root, strikePrice)
+
+    # return the updated tree -
+    return tree
+end
+
 function build_ternary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
-    numberOfLevels::Int64)::PSTernaryPriceTreeNode
+    numberOfLevels::Int64)::PSTernaryPriceTree
 
     # checks -
     # ...
@@ -238,10 +312,10 @@ function build_ternary_price_tree(basePrice::Float64, volatility::Float64, timeT
     root = build_ternary_tree_node(priceArray,root,1,number_of_elements)
 
     # build tree -
-    tree = PSTernaryPriceTree(root, Δt, U, C, D, numberOfLevels)
+    tree = PSTernaryPriceTree(root, Δt, U, C, D, volatility, numberOfLevels)
 
     # return -
-    return root
+    return tree
 end
 
 function build_binary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
@@ -297,4 +371,34 @@ function option_contract_price(tree::PSBinaryPriceTree, riskFreeRate::Float64, d
     return tree
 end
 
+function option_contract_price(tree::PSTernaryPriceTree, riskFreeRate::Float64, dividendRate::Float64)
+
+    # compute U, D, DT and p -
+    Δt = tree.Δt
+    U = tree.U
+    D = tree.D
+    C = tree.C
+    σ = tree.V
+
+    # compute the probability -
+    T1 = exp((riskFreeRate - dividendRate)*(Δt/2))
+    T2 = exp(-σ*sqrt(Δt/2))
+    T3 = exp(σ*sqrt(Δt/2))
+
+    pup = ((T1 - T2)/(T3 - T2))^2
+    pdown = ((T3 - T1)/(T3 - T2))^2
+    DF = exp(-riskFreeRate*Δt)
+    maxDepth = tree.depth
+
+    # process the tree -
+    depth_index_array = collect(range((maxDepth - 1),step=-1,stop=1))
+    for depth_index in depth_index_array
+        
+        # update the tree -
+        compute(tree.root, pup, pdown, DF, 1, depth_index)        
+    end
+
+    # return -
+    return tree
+end
 # ----------------------------------------------------------------------------------------------------------- #

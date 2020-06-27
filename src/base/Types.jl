@@ -44,13 +44,14 @@ struct PSTernaryPriceTree
     # data -
     root::PSTernaryPriceTreeNode
     Δt::Float64
-    U::Float64
-    C::Float64
-    D::Float64
+    U::Float64  # jump up
+    C::Float64  # jump center (same)
+    D::Float64  # jump down
+    V::Float64  # volitility -
     depth::Int64
 
-    function PSTernaryPriceTree(root::PSTernaryPriceTreeNode, Δt::Float64, U::Float64, C::Float64, D::Float64, depth::Int64)
-        this = new(root, Δt, U, C, D,depth)
+    function PSTernaryPriceTree(root::PSTernaryPriceTreeNode, Δt::Float64, U::Float64, C::Float64, D::Float64, V::Float64, depth::Int64)
+        this = new(root, Δt, U, C, D, V, depth)
     end
 end
 
