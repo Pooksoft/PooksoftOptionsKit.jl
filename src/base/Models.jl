@@ -151,7 +151,8 @@ function calculate_call_node_value(node::PSBinaryPriceTreeNode,strikePrice::Floa
     
     # calculate the intrinsicValue -
     node.intrinsicValue = max((price - strikePrice),0)
-    node.totalValue = max((price - strikePrice),0)      # we'll update this later -
+    node.americanOptionValue = max((price - strikePrice),0)      # we'll update this later -
+    node.europeanOptionValue = max((price - strikePrice),0)      # we'll update this later -
 
     # work on my kids -
     if (node.left !== nothing && node.right !== nothing)
@@ -181,11 +182,20 @@ function compute(node::PSBinaryPriceTreeNode, probability::Float64, discountFact
     # ok - are we at the target depth?
     if (currentDepth == targetDepth)
 
+        # european -
         # ok, we are at the depth we need, grab my kids and put them in the target set -
-        L = node.left.totalValue     # down
-        R = node.right.totalValue     # up
+        L = node.left.europeanOptionValue       # down
+        R = node.right.europeanOptionValue      # up
         totalValue = discountFactor*(probability*R+(1.0 - probability)*L)
-        node.totalValue = totalValue
+        node.europeanOptionValue = totalValue
+
+        # american -
+        L = node.left.americanOptionValue           # down
+        R = node.right.americanOptionValue          # up
+        totalValue = discountFactor*(probability*R+(1.0 - probability)*L)
+        
+        # compute the american value -
+        node.americanOptionValue = max(totalValue, node.intrinsicValue)
     else
         
         # ok, so we are *not* at the target depth -
@@ -202,7 +212,8 @@ function calculate_call_node_value(node::PSTernaryPriceTreeNode, strikePrice::Fl
     
     # calculate the intrinsicValue -
     node.intrinsicValue = max((price - strikePrice),0)
-    node.totalValue = max((price - strikePrice),0)      # we'll update this later -
+    node.americanOptionValue = max((price - strikePrice),0)      # we'll update this later -
+    node.europeanOptionValue = max((price - strikePrice),0)      # we'll update this later -
 
     # work on my kids -
     if (node.left !== nothing && node.right !== nothing)
@@ -235,11 +246,20 @@ function compute(node::PSTernaryPriceTreeNode, probabilityUp::Float64, probabili
     if (currentDepth == targetDepth)
 
         # ok, we are at the depth we need, grab my kids and put them in the target set -
-        L = node.left.totalValue        # down
-        R = node.right.totalValue       # up
-        C = node.center.totalValue      # center
-        totalValue = discountFactor*(probabilityUp*R+probabilityDown*L+(1-probabilityUp-probabilityDown)*C)
-        node.totalValue = totalValue
+        # european -
+        L = node.left.europeanOptionValue        # down
+        R = node.right.europeanOptionValue       # up
+        C = node.center.europeanOptionValue      # center
+        totalValue = discountFactor*(probabilityUp*R+probabilityDown*L+(1-(probabilityUp+probabilityDown))*C)
+        node.europeanOptionValue = totalValue
+
+        # compute the american value -
+        L = node.left.americanOptionValue        # down
+        R = node.right.americanOptionValue       # up
+        C = node.center.americanOptionValue      # center
+        totalValue = discountFactor*(probabilityUp*R+probabilityDown*L+(1-(probabilityUp+probabilityDown))*C)
+        node.americanOptionValue = max(totalValue, node.intrinsicValue)
+
     else
         
         # ok, so we are *not* at the target depth -

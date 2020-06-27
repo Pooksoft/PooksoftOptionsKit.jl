@@ -14,8 +14,11 @@ mutable struct PSBinaryPriceTreeNode
     price::Float64
     left::Union{Nothing, PSBinaryPriceTreeNode}
     right::Union{Nothing, PSBinaryPriceTreeNode}
+    
+    
     intrinsicValue::Union{Nothing,Float64}
-    totalValue::Float64
+    americanOptionValue::Union{Nothing,Float64}
+    europeanOptionValue::Union{Nothing,Float64}
     
     # constructor -
     function PSBinaryPriceTreeNode()
@@ -30,8 +33,10 @@ mutable struct PSTernaryPriceTreeNode
     left::Union{Nothing, PSTernaryPriceTreeNode}
     center::Union{Nothing, PSTernaryPriceTreeNode}
     right::Union{Nothing, PSTernaryPriceTreeNode}
+    
     intrinsicValue::Union{Nothing,Float64}
-    totalValue::Float64
+    americanOptionValue::Union{Nothing,Float64}
+    europeanOptionValue::Union{Nothing,Float64}
     
     # constructor -
     function PSTernaryPriceTreeNode()
