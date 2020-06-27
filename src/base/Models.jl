@@ -18,7 +18,44 @@ function crr_am_put(S, K, r, σ, t, N)
     return Z[1]
 end
 
-function update_price_array!(priceArray::Array{Float64,1}, up::Float64, down::Float64)
+function update_ternary_price_array!(priceArray::Array{Float64,1}, up::Float64, center::Float64, down::Float64)
+
+    # what is the size of the array?
+    number_of_prices = length(priceArray)
+
+    # main loop -
+    for index = 1:number_of_prices
+
+        # get the basePrice -
+        basePrice = priceArray[index]
+
+        # compute the prices -
+        down_price = basePrice*down
+        up_price = basePrice*up
+        center_price = basePrice*center
+
+        # add the prices to the array -
+        left_index = 3*(index - 1) + 2
+        center_index = 3*(index - 1) + 3
+        right_index = 3*(index - 1) + 4
+
+        # note - we need to check that we don't write into the array past the end
+        if (left_index<=number_of_prices)
+            priceArray[left_index] = down_price
+        end
+
+        if (center_index<=number_of_prices)
+            priceArray[center_index] = center_price
+        end
+
+        if (right_index<=number_of_prices)
+            priceArray[right_index] = up_price
+        end
+    end
+
+end
+
+function update_binary_price_array!(priceArray::Array{Float64,1}, up::Float64, down::Float64)
 
     # what is the size of the array?
     number_of_prices = length(priceArray)
@@ -48,7 +85,7 @@ function update_price_array!(priceArray::Array{Float64,1}, up::Float64, down::Fl
     end
 end
 
-function build_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSBinaryPriceTreeNode}, nodeIndex::Int64, maxCount::Int64)
+function build_binary_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSBinaryPriceTreeNode}, nodeIndex::Int64, maxCount::Int64)
 
     if (nodeIndex <= maxCount)
         
@@ -65,10 +102,41 @@ function build_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSBi
         root = tmpNode
 
         # insert L (down price)
-        root.left = build_tree_node(priceArray, root.left, 2*(nodeIndex - 1) + 2, maxCount)
+        root.left = build_binary_tree_node(priceArray, root.left, 2*(nodeIndex - 1) + 2, maxCount)
 
         # insert R (up price)
-        root.right = build_tree_node(priceArray, root.right, 2*(nodeIndex - 1) + 3, maxCount)
+        root.right = build_binary_tree_node(priceArray, root.right, 2*(nodeIndex - 1) + 3, maxCount)
+    end
+
+    # return -
+    return root
+end
+
+function build_ternary_tree_node(priceArray::Array{Float64,1}, root::Union{Nothing, PSTernaryPriceTreeNode}, nodeIndex::Int64, maxCount::Int64)
+
+    if (nodeIndex <= maxCount)
+        
+        # setup -
+        tmpNode = PSTernaryPriceTreeNode()
+        tmpNode.price = priceArray[nodeIndex]
+        
+        # Put dummy values on the L and R nodes -
+        tmpNode.left = nothing
+        tmpNode.center = nothing
+        tmpNode.right = nothing
+        tmpNode.intrinsicValue = nothing
+
+        # setup the root -
+        root = tmpNode
+
+        # insert L (down price)
+        root.left = build_ternary_tree_node(priceArray, root.left, 3*(nodeIndex - 1) + 2, maxCount)
+
+        # insert C (no change)
+        root.center = build_ternary_tree_node(priceArray, root.center, 3*(nodeIndex - 1) + 3, maxCount)
+
+        # insert R (up price)
+        root.right = build_ternary_tree_node(priceArray, root.right, 3*(nodeIndex - 1) + 4, maxCount)
     end
 
     # return -
@@ -116,9 +184,6 @@ function compute(node::PSBinaryPriceTreeNode, probability::Float64, discountFact
         L = node.left.totalValue     # down
         R = node.right.totalValue     # up
         totalValue = discountFactor*(probability*R+(1.0 - probability)*L)
-
-        @show (currentDepth, totalValue, probability, discountFactor)
-
         node.totalValue = totalValue
     else
         
@@ -147,30 +212,34 @@ function build_put_option_intrinsic_value_tree(tree::PSBinaryPriceTree, strikePr
     return tree
 end
 
-function build_ternary_price_tree(basePrice::Float64, riskFreeRate::Float64, dividendRate::Float64, 
-    volatility::Float64, timeToExercise::Float64, numberOfLevels::Int)::PSTernaryPriceTreeNode
+function build_ternary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
+    numberOfLevels::Int64)::PSTernaryPriceTreeNode
 
     # checks -
     # ...
 
     # compute up and down perturbations -
     Δt = timeToExercise/numberOfLevels
-    U = exp(volatility * √Δt)
-    D = 1 / U
+    U = exp(volatility * sqrt(2*Δt))
+    D = 1.0 / U
     C = 1.0
 
     # compute price array -
-    number_of_elements = ((3^numberOfLevels) - 1)/2
+    number_of_elements = Int64(((3^numberOfLevels) - 1)/2)
     priceArray = zeros(number_of_elements)
     priceArray[1] = basePrice
-    #update_price_array!(priceArray,U,D)
+    update_ternary_price_array!(priceArray,U,C,D)
 
     # build the root node -
     root = PSTernaryPriceTreeNode()
     root.intrinsicValue = nothing
 
+    # assemble tree root -
+    root = build_ternary_tree_node(priceArray,root,1,number_of_elements)
 
- 
+    # build tree -
+    tree = PSTernaryPriceTree(root, Δt, U, C, D, numberOfLevels)
+
     # return -
     return root
 end
@@ -190,14 +259,14 @@ function build_binary_price_tree(basePrice::Float64, volatility::Float64, timeTo
     number_of_elements = (2^numberOfLevels) - 1
     priceArray = zeros(number_of_elements)
     priceArray[1] = basePrice
-    update_price_array!(priceArray,U,D)
+    update_binary_price_array!(priceArray,U,D)
 
     # build the root node -
     root = PSBinaryPriceTreeNode()
     root.intrinsicValue = nothing
 
     # assemble tree root -
-    root = build_tree_node(priceArray,root,1,number_of_elements)
+    root = build_binary_tree_node(priceArray,root,1,number_of_elements)
 
     # build tree -
     tree = PSBinaryPriceTree(root, Δt, U, D, numberOfLevels)
