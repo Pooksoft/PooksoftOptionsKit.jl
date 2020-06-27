@@ -269,6 +269,70 @@ function compute(node::PSTernaryPriceTreeNode, probabilityUp::Float64, probabili
     end
 end
 
+
+function _build_ternary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
+    numberOfLevels::Int64)::PSTernaryPriceTree
+
+    # checks -
+    # ...
+
+    # compute up and down perturbations -
+    Δt = timeToExercise/numberOfLevels
+    U = exp(volatility * sqrt(2*Δt))
+    D = 1.0 / U
+    C = 1.0
+
+    # compute price array -
+    number_of_elements = Int64(((3^numberOfLevels) - 1)/2)
+    priceArray = zeros(number_of_elements)
+    priceArray[1] = basePrice
+    update_ternary_price_array!(priceArray,U,C,D)
+
+    # build the root node -
+    root = PSTernaryPriceTreeNode()
+    root.intrinsicValue = nothing
+
+    # assemble tree root -
+    root = build_ternary_tree_node(priceArray,root,1,number_of_elements)
+
+    # build tree -
+    tree = PSTernaryPriceTree(root, Δt, U, C, D, volatility, numberOfLevels)
+
+    # return -
+    return tree
+end
+
+function _build_binary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
+    numberOfLevels::Int)::PSBinaryPriceTree
+
+    # checks -
+    # ....
+
+    # compute up and down perturbations -
+    Δt = timeToExercise/numberOfLevels
+    U = exp(volatility * √Δt)
+    D = 1 / U
+
+    # compute price array -
+    number_of_elements = (2^numberOfLevels) - 1
+    priceArray = zeros(number_of_elements)
+    priceArray[1] = basePrice
+    update_binary_price_array!(priceArray,U,D)
+
+    # build the root node -
+    root = PSBinaryPriceTreeNode()
+    root.intrinsicValue = nothing
+
+    # assemble tree root -
+    root = build_binary_tree_node(priceArray,root,1,number_of_elements)
+
+    # build tree -
+    tree = PSBinaryPriceTree(root, Δt, U, D, numberOfLevels)
+
+    # return -
+    return tree
+end
+
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
 function build_call_option_intrinsic_value_tree(tree::PSBinaryPriceTree, strikePrice::Float64)::PSBinaryPriceTree
     
@@ -306,67 +370,35 @@ function build_put_option_intrinsic_value_tree(tree::PSTernaryPriceTree, strikeP
     return tree
 end
 
-function build_ternary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
-    numberOfLevels::Int64)::PSTernaryPriceTree
+function build_ternary_price_tree(parameters::PSOptionKitPricingParameters)::PSTernaryPriceTree
 
     # checks -
     # ...
 
-    # compute up and down perturbations -
-    Δt = timeToExercise/numberOfLevels
-    U = exp(volatility * sqrt(2*Δt))
-    D = 1.0 / U
-    C = 1.0
+    # get parameters -
+    baseAssetPrice = parameters.baseAssetPrice
+    volatility = parameters.volatility
+    timeToExercise = parameters.timeToExercise
+    numberOfLevels = parameters.numberOfLevels
 
-    # compute price array -
-    number_of_elements = Int64(((3^numberOfLevels) - 1)/2)
-    priceArray = zeros(number_of_elements)
-    priceArray[1] = basePrice
-    update_ternary_price_array!(priceArray,U,C,D)
-
-    # build the root node -
-    root = PSTernaryPriceTreeNode()
-    root.intrinsicValue = nothing
-
-    # assemble tree root -
-    root = build_ternary_tree_node(priceArray,root,1,number_of_elements)
-
-    # build tree -
-    tree = PSTernaryPriceTree(root, Δt, U, C, D, volatility, numberOfLevels)
-
-    # return -
-    return tree
+    # call helper method -
+    return _build_ternary_price_tree(baseAssetPrice, volatility, timeToExercise, numberOfLevels)
 end
 
-function build_binary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
-    numberOfLevels::Int)::PSBinaryPriceTree
+function build_binary_price_tree(parameters::PSOptionKitPricingParameters)::PSBinaryPriceTree
 
     # checks -
     # ....
 
-    # compute up and down perturbations -
-    Δt = timeToExercise/numberOfLevels
-    U = exp(volatility * √Δt)
-    D = 1 / U
+    
+    # get parameters -
+    baseAssetPrice = parameters.baseAssetPrice
+    volatility = parameters.volatility
+    timeToExercise = parameters.timeToExercise
+    numberOfLevels = parameters.numberOfLevels
 
-    # compute price array -
-    number_of_elements = (2^numberOfLevels) - 1
-    priceArray = zeros(number_of_elements)
-    priceArray[1] = basePrice
-    update_binary_price_array!(priceArray,U,D)
-
-    # build the root node -
-    root = PSBinaryPriceTreeNode()
-    root.intrinsicValue = nothing
-
-    # assemble tree root -
-    root = build_binary_tree_node(priceArray,root,1,number_of_elements)
-
-    # build tree -
-    tree = PSBinaryPriceTree(root, Δt, U, D, numberOfLevels)
-
-    # return -
-    return tree
+    # call helper method -
+    return _build_binary_price_tree(baseAssetPrice, volatility, timeToExercise, numberOfLevels)
 end
 
 function option_contract_price(tree::PSBinaryPriceTree, riskFreeRate::Float64, dividendRate::Float64)
@@ -420,5 +452,28 @@ function option_contract_price(tree::PSTernaryPriceTree, riskFreeRate::Float64, 
 
     # return -
     return tree
+end
+
+function option_contract_price(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, optionContractType::Symbol = :call)
+
+    # checks ...
+    # ...
+
+    # what is the type of option contract?
+    optionContractType = parameters.optionContractType
+    priceTree = nothing
+    if modelTreeType == :binary
+    
+        # build the pricing model -
+        priceTree = build_binary_price_tree(parameters)
+
+    elseif modelTreeType == :ternary
+        
+        # build a ternary price model -
+
+    else
+        # throw a unknown model type error -
+    end
+    
 end
 # ----------------------------------------------------------------------------------------------------------- #

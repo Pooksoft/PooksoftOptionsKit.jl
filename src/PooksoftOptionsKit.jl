@@ -16,6 +16,13 @@ export build_call_option_intrinsic_value_tree
 export build_put_option_intrinsic_value_tree
 export option_contract_price
 
+# the greeks -
+export delta
+export theta
+export gamma
+export vega
+export rho
+
 # export types -
 export PSResult
 export PSError
@@ -23,6 +30,9 @@ export PSAbstractAsset
 export PSCallOptionContract
 export PSPutOptionContract
 export PSEquityAsset
+
+# Parameters for greek calculation -
+export PSOptionKitPricingParameters
 
 # Binary tree -
 export PSBinaryPriceTreeNode

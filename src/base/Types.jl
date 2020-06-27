@@ -88,6 +88,22 @@ struct PSEquityAsset <: PSAbstractAsset
     end
 end
 
+struct PSOptionKitPricingParameters
+
+    # data -
+    baseAssetPrice::Float64
+    volatility::Float64
+    timeToExercise::Float64
+    numberOfLevels::Float64
+    strikePrice::Float64
+    riskFreeRate::Float64
+    dividendRate::Float64
+
+    function PSOptionKitParameters(baseAssetPrice,volatility,timeToExercise,numberOfLevels,strikePrice,riskFreeRate,dividendRate)
+        this = new(baseAssetPrice,volatility,timeToExercise,numberOfLevels,strikePrice,riskFreeRate,dividendRate)
+    end
+end
+
 struct PSCallOptionContract <: PSAbstractAsset
 
     # data -
