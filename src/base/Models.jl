@@ -426,7 +426,7 @@ end
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
 function build_ternary_price_tree(parameters::PSOptionKitPricingParameters)::PSTernaryPriceTree
 
-    # checks -
+    # TODO: checks -
     # ...
 
     # get parameters -
@@ -441,7 +441,7 @@ end
 
 function build_binary_price_tree(parameters::PSOptionKitPricingParameters)::PSBinaryPriceTree
 
-    # checks -
+    # TODO: checks -
     # ....
 
     
@@ -457,7 +457,7 @@ end
 
 function option_contract_price(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, optionContractType::Symbol = :call)
 
-    # checks ...
+    # TODO: checks ...
     # ...
 
     # setup the price tree -
