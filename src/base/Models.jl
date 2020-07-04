@@ -455,7 +455,8 @@ function build_binary_price_tree(parameters::PSOptionKitPricingParameters)::PSBi
     return _build_binary_price_tree(baseAssetPrice, volatility, timeToExercise, numberOfLevels)
 end
 
-function option_contract_price(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, optionContractType::Symbol = :call)
+function option_contract_price(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, optionContractType::Symbol = :call, 
+    earlyExercise::Bool = false)::(Union{PSResult{T}, Nothing} where T<:Any)
 
     # TODO: checks ...
     # ...
@@ -474,7 +475,7 @@ function option_contract_price(parameters::PSOptionKitPricingParameters; modelTr
 
     else
         # throw a unknown model type error -
-        # ...
+        return PSResult{PSError}(PSError("unkown model: model type not supported"))
     end
     
     # compute the values on the tree -
@@ -485,13 +486,63 @@ function option_contract_price(parameters::PSOptionKitPricingParameters; modelTr
         optionValueTree = _build_put_option_intrinsic_value_tree(priceTree, parameters.strikePrice)
     else
         # throw an unknown contract type -
-        # ...
+        return PSResult{PSError}(PSError("unkown contract: contract type not supported"))
     end
 
     # compute -
     optionContractCostTree = _option_contract_price(priceTree, parameters.riskFreeRate, parameters.dividendRate)
 
+    # setup the optionPrice -
+    optionContractPrice = 0.0
+    if (earlyExercise == false)
+        optionContractPrice = optionContractCostTree.root.europeanOptionValue
+    else
+        optionContractPrice = optionContractCostTree.root.americanOptionValue
+    end
+
     # return -
-    return optionContractCostTree
+    return PSResult{Float64}(optionContractPrice)
 end
+
+function option_contract_price(assetPriceArray::Array{Float64,1}, parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, optionContractType::Symbol = :call, 
+    earlyExercise::Bool = false)::(Union{PSResult{T}, Nothing} where T<:Any)
+
+    # checks -
+    # ...
+
+    # initialize -
+    optionContractPriceArray = Array{Float64,1}()
+
+    # Get base values from the properties struct -
+    volatility = parameters.volatility
+    timeToExercise = parameters.timeToExercise
+    numberOfLevels = parameters.numberOfLevels
+    strikePrice = parameters.strikePrice
+    riskFreeRate = parameters.riskFreeRate
+    dividendRate = parameters.dividendRate
+
+    # main loop -
+    for asset_price_value in assetPriceArray
+
+        # create new options struct -
+        optionsParameterStruct = PSOptionKitPricingParameters(asset_price_value, volatility, timeToExercise, numberOfLevels, strikePrice, riskFreeRate, dividendRate)
+
+        # compute the price -
+        result_object = option_contract_price(optionsParameterStruct; modelTreeType = modelTreeType, optionContractType = optionContractType, earlyExercise = earlyExercise)
+
+        # check the type - if error, then return -
+        if (typeof(result_object.value) == PSError)
+            return result_object
+        else
+
+            # ok, so we seem to have a legit value. Grad the price, and cache in the array -
+            value::Float64 = result_object.value    # should we check on the type?
+            push!(optionContractPriceArray, value)
+        end
+    end
+    
+    # return -
+    return PSResult{Array{Float64,1}}(optionContractPriceArray)
+end
+
 # ----------------------------------------------------------------------------------------------------------- #
