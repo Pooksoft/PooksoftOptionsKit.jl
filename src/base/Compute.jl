@@ -186,7 +186,7 @@ function compute_equity_asset_profit_loss_at_expiration(equityObject::PSEquityAs
     return PSResult{Array{Float64,2}}(assetProfitLossArray)
 end
 
-function compute_complex_trade_profit_and_loss_at_expiration(assetSet::Set{PSAbstractAsset},  assetPriceStart::Float64, assetPriceStop::Float64; 
+function compute_complex_trade_profit_and_loss_at_expiration(assetSet::Set{PSAbstractAsset}, assetPriceStart::Float64, assetPriceStop::Float64; 
     number_of_price_steps::Int64=1000)::(Union{PSResult{T}, Nothing} where T<:Any)
 
     # checks -

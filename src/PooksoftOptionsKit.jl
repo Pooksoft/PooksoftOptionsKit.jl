@@ -14,6 +14,9 @@ export build_binary_price_tree
 export build_ternary_price_tree
 export option_contract_price
 
+# implied volatility -
+export estimate_implied_volatility
+
 # the greeks -
 export delta
 export theta
