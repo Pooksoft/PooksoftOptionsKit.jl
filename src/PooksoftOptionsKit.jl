@@ -25,7 +25,6 @@ export vega
 export rho
 
 # export types -
-export PSAbstractAsset
 export PSCallOptionContract
 export PSPutOptionContract
 export PSEquityAsset
