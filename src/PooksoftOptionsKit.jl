@@ -25,8 +25,6 @@ export vega
 export rho
 
 # export types -
-export PSResult
-export PSError
 export PSAbstractAsset
 export PSCallOptionContract
 export PSPutOptionContract

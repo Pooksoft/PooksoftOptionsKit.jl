@@ -6,4 +6,6 @@ version = "0.1.0"
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+PookTradeBase = "a7d80504-cf70-4d3c-ae4d-49fe0971309a"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"

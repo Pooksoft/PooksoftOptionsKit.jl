@@ -5,6 +5,8 @@ const path_to_package = dirname(pathof(@__MODULE__))
 using PyPlot
 using Dates
 using Optim
+using Reexport
+@reexport using PookTradeBase
 
 # include my code -
 include("./base/Types.jl")

@@ -201,6 +201,13 @@ version = "1.0.4"
 deps = ["Dates", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
+[[PookTradeBase]]
+git-tree-sha1 = "95c1d4011b267cdb30ca7d8f089455ff1d807b4a"
+repo-rev = "master"
+repo-url = "https://github.com/Pooksoft/PookTradeBase.git"
+uuid = "a7d80504-cf70-4d3c-ae4d-49fe0971309a"
+version = "0.1.0"
+
 [[PositiveFactorizations]]
 deps = ["LinearAlgebra", "Test"]
 git-tree-sha1 = "127c47b91990c101ee3752291c4f45640eeb03d1"

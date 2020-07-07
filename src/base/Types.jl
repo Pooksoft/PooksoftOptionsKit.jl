@@ -1,14 +1,4 @@
-struct PSResult{T}
-    value::T
-end
-
-struct PSError <: Exception
-    message::String
-end
-
-abstract type PSAbstractAsset end
-
-mutable struct PSBinaryPriceTreeNode
+mutable struct PSBinaryPriceTreeNode <: PSAbstractAssetTreeNode
 
     # data -
     price::Float64
@@ -26,7 +16,7 @@ mutable struct PSBinaryPriceTreeNode
     end
 end
 
-mutable struct PSTernaryPriceTreeNode
+mutable struct PSTernaryPriceTreeNode <: PSAbstractAssetTreeNode
 
     # data -
     price::Float64
@@ -44,7 +34,7 @@ mutable struct PSTernaryPriceTreeNode
     end
 end
 
-struct PSTernaryPriceTree
+struct PSTernaryPriceTree <: PSAbstractAssetTree
 
     # data -
     root::PSTernaryPriceTreeNode
@@ -60,7 +50,7 @@ struct PSTernaryPriceTree
     end
 end
 
-struct PSBinaryPriceTree
+struct PSBinaryPriceTree <: PSAbstractAssetTree
 
     # data -
     root::PSBinaryPriceTreeNode
