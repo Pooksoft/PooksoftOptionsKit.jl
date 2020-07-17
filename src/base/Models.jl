@@ -255,6 +255,10 @@ end
 
 function _option_contract_price(tree::PSBinaryPriceTree, riskFreeRate::Float64, dividendRate::Float64)
 
+    # risk free rate and dividendRate are percentages, so we need to convert:
+    riskFreeRate = (1/100)*riskFreeRate
+    dividendRate = (1/100)*dividendRate
+
     # compute U, D, DT and p -
     Δt = tree.Δt
     U = tree.U
@@ -392,6 +396,10 @@ function _build_put_option_intrinsic_value_tree(tree::PSTernaryPriceTree, strike
 end
 
 function _option_contract_price(tree::PSTernaryPriceTree, riskFreeRate::Float64, dividendRate::Float64)
+
+    # risk free rate and dividendRate are percentages, so we need to convert:
+    riskFreeRate = (1/100)*riskFreeRate
+    dividendRate = (1/100)*dividendRate
 
     # compute U, D, DT and p -
     Δt = tree.Δt
