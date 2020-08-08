@@ -6,6 +6,7 @@ using PyPlot
 using Dates
 using Optim
 using Reexport
+using JSON
 @reexport using PookTradeBase
 
 # include my code -

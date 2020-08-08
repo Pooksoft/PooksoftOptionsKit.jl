@@ -7,7 +7,7 @@ include("Include.jl")
 export compute_call_option_profit_loss_at_expiration
 export compute_put_option_profit_loss_at_expiration
 export compute_equity_asset_profit_loss_at_expiration
-export compute_complex_trade_profit_and_loss_at_expiration
+export compute_multileg_profit_and_loss_at_expiration
 
 # methods for pricing options (uses binary tree)
 export build_binary_price_tree
