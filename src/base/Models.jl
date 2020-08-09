@@ -253,6 +253,12 @@ function _build_put_option_intrinsic_value_tree(tree::PSBinaryPriceTree, strikeP
     return tree
 end
 
+function _build_multileg_option_intrinsic_value_tree(tree::PSBinaryPriceTree, optionLegSet::Set{PSAbstractAsset})::PSBinaryPriceTree 
+
+    
+
+end
+
 function _option_contract_price(tree::PSBinaryPriceTree, riskFreeRate::Float64, dividendRate::Float64)
 
     # risk free rate and dividendRate are percentages, so we need to convert:
@@ -377,6 +383,9 @@ function _build_ternary_price_tree(basePrice::Float64, volatility::Float64, time
     return tree
 end
 
+function _build_multileg_option_intrinsic_value_tree(tree::PSTernaryPriceTree, strikePrice::Float64)::PSTernaryPriceTree
+end
+
 function _build_call_option_intrinsic_value_tree(tree::PSTernaryPriceTree, strikePrice::Float64)::PSTernaryPriceTree
     
     # update the root - walk through the tree, and calc the intrinsic values -
@@ -489,7 +498,7 @@ function option_contract_price(parameters::PSOptionKitPricingParameters; modelTr
     # compute the values on the tree -
     optionValueTree = nothing
     if (optionContractType == :call)
-        optionValueTree = _build_call_option_intrinsic_value_tree(priceTree,parameters.strikePrice)
+        optionValueTree = _build_call_option_intrinsic_value_tree(priceTree, parameters.strikePrice)
     elseif (optionContractType == :put)
         optionValueTree = _build_put_option_intrinsic_value_tree(priceTree, parameters.strikePrice)
     else
@@ -553,4 +562,95 @@ function option_contract_price(assetPriceArray::Array{Float64,1}, parameters::PS
     return PSResult{Array{Float64,1}}(optionContractPriceArray)
 end
 
+function multileg_option_contract_price(assetPriceArray::Array{Float64,1}, optionLegSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, intrinsicValueFunction::Function; 
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::(Union{PSResult{T}, Nothing} where T<:Any)
+
+
+    # checks -
+    # ...
+
+    # initialize -
+    optionContractPriceArray = Array{Float64,1}()
+
+    # Get base values from the properties struct -
+    volatility = parameters.volatility
+    timeToExercise = parameters.timeToExercise
+    numberOfLevels = parameters.numberOfLevels
+    strikePrice = parameters.strikePrice
+    riskFreeRate = parameters.riskFreeRate
+    dividendRate = parameters.dividendRate
+
+    # main loop -
+    for asset_price_value in assetPriceArray
+
+        # create new options struct -
+        optionsParameterStruct = PSOptionKitPricingParameters(asset_price_value, volatility, timeToExercise, numberOfLevels, strikePrice, riskFreeRate, dividendRate)
+
+        # compute the price -
+        result_object = multileg_option_contract_price(optionLegSet, optionsParameterStruct, intrinsicValueFunction; modelTreeType = modelTreeType, earlyExercise = earlyExercise)
+
+        # check the type - if error, then return -
+        if (typeof(result_object.value) == PSError)
+            return result_object
+        else
+
+            # ok, so we seem to have a legit value. Grad the price, and cache in the array -
+            value::Float64 = result_object.value    # should we check on the type?
+            push!(optionContractPriceArray, value)
+        end
+    end
+
+    # return -
+    return PSResult{Array{Float64,1}}(optionContractPriceArray)
+end
+
+function multileg_option_contract_price(optionLegSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, intrinsicValueFunction::Function; 
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::(Union{PSResult{T}, Nothing} where T<:Any)
+
+     # TODO: checks ...
+    # ...
+
+    # setup the price tree -
+    priceTree = nothing
+    if modelTreeType == :binary
+    
+        # build the pricing model -
+        priceTree = build_binary_price_tree(parameters)
+
+    elseif modelTreeType == :ternary
+        
+        # build a ternary price model -
+        priceTree = build_ternary_price_tree(parameters)
+
+    else
+        # throw a unknown model type error -
+        return PSResult{PSError}(PSError("unkown model: model type not supported"))
+    end
+
+     # compute the values on the tree -
+     # not sure how to do this ...
+     optionValueTree = nothing
+     if (optionContractType == :call)
+         optionValueTree = _build_call_option_intrinsic_value_tree(priceTree,parameters.strikePrice)
+     elseif (optionContractType == :put)
+         optionValueTree = _build_put_option_intrinsic_value_tree(priceTree, parameters.strikePrice)
+     else
+         # throw an unknown contract type -
+         return PSResult{PSError}(PSError("unkown contract: contract type not supported"))
+     end
+ 
+     # compute -
+     optionContractCostTree = _option_contract_price(priceTree, parameters.riskFreeRate, parameters.dividendRate)
+ 
+     # setup the optionPrice -
+     optionContractPrice = 0.0
+     if (earlyExercise == false)
+         optionContractPrice = optionContractCostTree.root.europeanOptionValue
+     else
+         optionContractPrice = optionContractCostTree.root.americanOptionValue
+     end
+ 
+     # return -
+     return PSResult{Float64}(optionContractPrice)
+end
 # ----------------------------------------------------------------------------------------------------------- #
