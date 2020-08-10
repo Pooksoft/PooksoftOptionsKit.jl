@@ -4,10 +4,7 @@ module PooksoftOptionsKit
 include("Include.jl")
 
 # export methods -
-export compute_call_option_profit_loss_at_expiration
-export compute_put_option_profit_loss_at_expiration
-export compute_equity_asset_profit_loss_at_expiration
-export compute_multileg_profit_and_loss_at_expiration
+export compute_option_profit_and_loss_at_expiration
 
 # methods for pricing options (uses binary tree)
 export build_binary_price_tree
@@ -39,5 +36,7 @@ export PSBinaryPriceTree
 # Ternary tree -
 export PSTernaryPriceTreeNode
 export PSTernaryPriceTree
+
+export path_to_package
 
 end # module

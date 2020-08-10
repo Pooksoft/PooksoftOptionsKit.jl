@@ -5,10 +5,8 @@ mutable struct PSBinaryPriceTreeNode <: PSAbstractAssetTreeNode
     left::Union{Nothing, PSBinaryPriceTreeNode}
     right::Union{Nothing, PSBinaryPriceTreeNode}
     
-    
-    intrinsicValue::Union{Nothing,Float64}
-    americanOptionValue::Union{Nothing,Float64}
-    europeanOptionValue::Union{Nothing,Float64}
+    intrinsicValueSet::Union{Nothing,Set{Float64}}
+    totalOptionValue::Union{Nothing,Float64}
     
     # constructor -
     function PSBinaryPriceTreeNode()
@@ -24,9 +22,8 @@ mutable struct PSTernaryPriceTreeNode <: PSAbstractAssetTreeNode
     center::Union{Nothing, PSTernaryPriceTreeNode}
     right::Union{Nothing, PSTernaryPriceTreeNode}
     
-    intrinsicValue::Union{Nothing,Float64}
-    americanOptionValue::Union{Nothing,Float64}
-    europeanOptionValue::Union{Nothing,Float64}
+    intrinsicValueSet::Union{Nothing,Set{Float64}}
+    totalOptionValue::Union{Nothing,Float64}
     
     # constructor -
     function PSTernaryPriceTreeNode()
@@ -81,16 +78,14 @@ end
 struct PSOptionKitPricingParameters
 
     # data -
-    baseAssetPrice::Float64
     volatility::Float64
     timeToExercise::Float64
     numberOfLevels::Int64
-    strikePrice::Float64
     riskFreeRate::Float64
     dividendRate::Float64
 
-    function PSOptionKitPricingParameters(baseAssetPrice,volatility,timeToExercise,numberOfLevels,strikePrice,riskFreeRate,dividendRate)
-        this = new(baseAssetPrice,volatility,timeToExercise,numberOfLevels,strikePrice,riskFreeRate,dividendRate)
+    function PSOptionKitPricingParameters(volatility,timeToExercise,numberOfLevels,riskFreeRate,dividendRate)
+        this = new(volatility,timeToExercise,numberOfLevels,riskFreeRate,dividendRate)
     end
 end
 
@@ -103,9 +98,12 @@ struct PSCallOptionContract <: PSAbstractAsset
     premimumValue::Float64
     numberOfContracts::Int64
     sense::Symbol
+    contractMultiplier::Float64
 
-    function PSCallOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64, numberOfContracts::Int64; sense::Symbol=:buy)
-        this = new(assetSymbol, strikePrice, expirationDate, premimumValue, numberOfContracts, sense)
+    function PSCallOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64, numberOfContracts::Int64; 
+            sense::Symbol=:buy, contractMultiplier::Float64 = 100.0)
+        
+            this = new(assetSymbol, strikePrice, expirationDate, premimumValue, numberOfContracts, sense, contractMultiplier)
     end
 end
 
@@ -118,8 +116,11 @@ struct PSPutOptionContract <: PSAbstractAsset
     premimumValue::Float64
     numberOfContracts::Int64
     sense::Symbol
+    contractMultiplier::Float64
 
-    function PSPutOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64, numberOfContracts::Int64; sense::Symbol=:buy)
-        this = new(assetSymbol, strikePrice, expirationDate, premimumValue, numberOfContracts, sense)
+    function PSPutOptionContract(assetSymbol::String, expirationDate::Date, strikePrice::Float64, premimumValue::Float64, numberOfContracts::Int64; 
+            sense::Symbol=:buy, contractMultiplier::Float64 = 100.0)
+
+        this = new(assetSymbol, strikePrice, expirationDate, premimumValue, numberOfContracts, sense, contractMultiplier)
     end
 end

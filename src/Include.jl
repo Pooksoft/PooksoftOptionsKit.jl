@@ -12,7 +12,9 @@ using JSON
 # include my code -
 include("./base/Types.jl")
 include("./base/Checks.jl")
-include("./base/Models.jl")
+include("./base/Intrinsic.jl")
+include("./base/Binary.jl")
+include("./base/Ternary.jl")
 include("./base/Greeks.jl")
 include("./base/Compute.jl")
 include("./base/Volatility.jl")
