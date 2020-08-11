@@ -57,7 +57,7 @@ function estimated_options_price_array()
         push!(assetSet, callOptionContract)    
         
         # build the pricing tree -
-        tree = build_binary_price_tree(assetSet, amd_option_parameters, stock_price)
+        tree = build_ternary_price_tree(assetSet, amd_option_parameters, stock_price)
 
         # compute -
         result = option_contract_price(tree, amd_option_parameters)
