@@ -1,9 +1,9 @@
 {
     
     "asset_price_array_parameters":{
-        "asset_price_start":20.0,
-        "asset_price_stop":80.0,
-        "number_of_steps":100
+        "asset_price_start":44.0,
+        "asset_price_stop":60.0,
+        "number_of_steps":1000
     },
 
     "lattice_model_parameters":{
@@ -18,19 +18,10 @@
     "asset_set_parameters":[
         {
             "ticker_symbol":"AMD",
-            "type":"call",
+            "type":"put",
             "sense":"sell",
-            "strike_price":60.0,
-            "premium_value":1.50,
-            "number_of_contracts":1,
-            "expiration":"2020-08-07"
-        },
-        {
-            "ticker_symbol":"AMD",
-            "type":"call",
-            "sense":"buy",
             "strike_price":50.0,
-            "premium_value":2.07,
+            "premium_value":2.24,
             "number_of_contracts":1,
             "expiration":"2020-08-07"
         }

@@ -7,6 +7,7 @@ using Dates
 using Optim
 using Reexport
 using JSON
+using ColorTypes
 @reexport using PookTradeBase
 
 # include my code -
@@ -17,5 +18,6 @@ include("./base/Binary.jl")
 include("./base/Ternary.jl")
 include("./base/Greeks.jl")
 include("./base/Compute.jl")
+include("./base/Factory.jl")
 include("./base/Volatility.jl")
 include("./base/Utility.jl")

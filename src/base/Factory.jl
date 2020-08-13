@@ -82,7 +82,7 @@ function build_simulation_asset_set(pathToSimulationFile::String)::PSResult
     for (index, asset_dictionary) in enumerate(asset_dictionary_array)
         
         # initialize -
-        result = nothing
+        local result = nothing
 
         # ok, so lets grab data from the asset_dictionary, and build each asset type -
         type_string = asset_dictionary["type"]
@@ -93,11 +93,6 @@ function build_simulation_asset_set(pathToSimulationFile::String)::PSResult
             result = _build_put_contract_object(asset_dictionary)
         elseif (type_symbol == :equity)
             result = _build_equity_object(asset_dictionary)
-        end
-
-        # check the result - if error, then throw?
-        if (typeof(result.value) != PSAbstractAsset)
-            return PSResult(result.value)
         end
 
         # grab -

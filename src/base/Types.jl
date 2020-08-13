@@ -1,3 +1,7 @@
+# abstract types -
+abstract type PSAbstractVisualizationTheme end
+
+# concrete types -
 mutable struct PSBinaryPriceTreeNode <: PSAbstractAssetTreeNode
 
     # data -
@@ -61,7 +65,6 @@ struct PSBinaryPriceTree <: PSAbstractAssetTree
     end
 end
 
-
 struct PSEquityAsset <: PSAbstractAsset
 
     # data -
@@ -123,4 +126,17 @@ struct PSPutOptionContract <: PSAbstractAsset
 
         this = new(assetSymbol, strikePrice, expirationDate, premimumValue, numberOfContracts, sense, contractMultiplier)
     end
+end
+
+struct PSVisualizationTheme <: PSAbstractVisualizationTheme
+
+    # data -
+    backgroundColor::RGBA
+    foregroundColor::RGBA
+    axisBox::Boolean
+    lineStyle::String
+    lineWeight::Int64
+    fontName::String
+    fontSize::Int64
+    fontColor::RGBA
 end
