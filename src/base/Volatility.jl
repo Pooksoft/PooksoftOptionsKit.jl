@@ -48,4 +48,27 @@ function estimate_implied_volatility(contract::PSAbstractAsset, parameters::PSOp
     # return the result -
     return Optim.minimizer(opt_result)[1]
 end
+
+function compute_weighted_volatility(data::DataFrame,weightKey::Symbol, volatilityKey::Symbol)::PSResult
+
+    # initialize -
+    volatility_array = Array{Float64,1}()
+
+    # sum the wght key -
+    wght_sum = sum(data[!,weightKey])
+    iv_array = data[!,volatilityKey]
+
+    # main loop -
+    for (index, iv_value) in enumerate(iv_array)
+        
+        # compute weight fraction -
+        wght_frac = data[index,weightKey]*(1/wght_sum)
+
+        # compute weighted iv value -
+        value = 
+    end
+
+    # return -
+    return PSResult(volatility_array)
+end
 # ---------------------------------------------------------------- #

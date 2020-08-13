@@ -1,8 +1,8 @@
 using PyPlot
 
-# assumption: #00A2FF
+# assumption: seller blue #00A2FF, buyer orange #FF8C00 
 # we have already run the simulation_at_exp script -
-plot(data_array_at_exp[:,1], data_array_at_exp[:,2], lw=2, color="darkorange")
+plot(data_array_at_exp[:,1], data_array_at_exp[:,2], lw=2, color="#FF8C00")
 ax = gca()
 fig = gcf()
 ax.set_facecolor("black")
