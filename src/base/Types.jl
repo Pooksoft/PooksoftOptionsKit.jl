@@ -78,7 +78,7 @@ struct PSEquityAsset <: PSAbstractAsset
     end
 end
 
-struct PSOptionKitPricingParameters
+mutable struct PSOptionKitPricingParameters
 
     # data -
     volatility::Float64
