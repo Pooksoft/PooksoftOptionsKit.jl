@@ -61,5 +61,5 @@ end
 
 # setup -
 current_close = 7.23
-path_to_design_file = "$(pwd())/tests/config/IronCondor.json"
+path_to_design_file = "$(pwd())/tests/config/IronCondor-F.json"
 (data_array_at_exp,pa) = simulate(path_to_design_file, current_close)

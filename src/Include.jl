@@ -8,6 +8,7 @@ using Optim
 using Reexport
 using JSON
 using ColorTypes
+using DataFrames
 @reexport using PookTradeBase
 
 # include my code -

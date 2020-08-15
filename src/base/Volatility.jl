@@ -57,15 +57,13 @@ function compute_weighted_volatility(data::DataFrame,weightKey::Symbol, volatili
     # sum the wght key -
     wght_sum = sum(data[!,weightKey])
     iv_array = data[!,volatilityKey]
+    wght_array = data[!,weightKey]
 
     # main loop -
     for (index, iv_value) in enumerate(iv_array)
         
-        # compute weight fraction -
-        wght_frac = data[index,weightKey]*(1/wght_sum)
-
         # compute weighted iv value -
-        value = 
+        value = wght_array[index]*iv_array[index]
     end
 
     # return -
