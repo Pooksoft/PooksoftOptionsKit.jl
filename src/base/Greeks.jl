@@ -7,57 +7,113 @@
 # riskFreeRate::Float64
 # dividendRate::Float64
 
-function delta(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, 
-    optionContractType::Symbol = :call, earlyExercise::Bool = false)::Float64
+function delta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::Float64
 
     # TODO: checks ...
-    # ...
     
-    # compute the option price with the base parameters -
-    baseOptionPriceTree = option_contract_price(parameters; modelTreeType = modelTreeType, optionContractType = optionContractType)
+    # check: tree type -
+    tree_type_set = Set{Symbol}()
+    push!(tree_type_set,:binary)
+    push!(tree_type_set,:ternary)
+    if (in(modelTreeType,tree_type_set) == false)
+        return PSResult(ArgumentError("Unsupported model tree type"))
+    end
 
-    # create a new paramter w + 1 price -
-    perturbedParameters = PSOptionKitPricingParameters(((parameters.baseAssetPrice) + 1), parameters.volatility, parameters.timeToExercise, parameters.numberOfLevels,
-        parameters.strikePrice, parameters.riskFreeRate, parameters.dividendRate)
+    # compute the price tree w/the underlying price -
+    price_tree_1 = nothing
+    if modelTreeType == :binary
+        price_tree_1 = build_binary_price_tree(assetSet, parameters, underlyingAssetPrice)
+    elseif modelTreeType == :ternary
+        price_tree_1 = build_ternary_price_tree(assetSet, parameters, underlyingAssetPrice)        
+    end
 
-    # re-compute the option price -
-    perturbedOptionPriceTree = option_contract_price(perturbedParameters; modelTreeType = modelTreeType, optionContractType = optionContractType)
+    # compute the price tree w/(underlyingAssetPrice + 1)
+    price_tree_2 = nothing
+    if modelTreeType == :binary
+        price_tree_2 = build_binary_price_tree(assetSet, parameters, (underlyingAssetPrice + 1.0))
+    elseif modelTreeType == :ternary
+        price_tree_2 = build_ternary_price_tree(assetSet, parameters, (underlyingAssetPrice + 1.0))
+    end
+
+    # compute the option cost w/price_tree_1 -
+    option_price_1 = nothing
+    result = option_contract_price(price_tree_1, parameters)
+    if (typeof(result.value) == PSError)
+        return result
+    else
+        option_price_1 = result.value
+    end
+
+    # compute the option cosr w/price_tree_2
+    option_price_2 = nothing
+    result = option_contract_price(price_tree_2, parameters)
+    if (typeof(result.value) == PSError)
+        return result
+    else
+        option_price_2 = result.value
+    end
 
     # compute delta -
-    delta = 0.0
-    if (earlyExercise == false)
-        delta = perturbedOptionPriceTree.root.europeanOptionValue - baseOptionPriceTree.root.europeanOptionValue
-    else
-        delta = perturbedOptionPriceTree.root.americanOptionValue - baseOptionPriceTree.root.americanOptionValue
-    end
+    delta = option_price_2 - option_price_1
 
     # return -
     return delta
 end
 
-function theta(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, 
-    optionContractType::Symbol = :call, earlyExercise::Bool = false)::Float64
+function theta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::Float64
     
     # TODO: checks ...
-    # ...
     
-    # compute the option price with the base parameters -
-    baseOptionPriceTree = option_contract_price(parameters; modelTreeType = modelTreeType, optionContractType = optionContractType)
-
-    # create a new paramter w + 1 price -
-    perturbedParameters = PSOptionKitPricingParameters(parameters.baseAssetPrice, parameters.volatility, (parameters.timeToExercise - (1.0/365)), parameters.numberOfLevels,
-        parameters.strikePrice, parameters.riskFreeRate, parameters.dividendRate)
-
-    # re-compute the option price -
-    perturbedOptionPriceTree = option_contract_price(perturbedParameters; modelTreeType = modelTreeType, optionContractType = optionContractType)
-
-    # compute delta -
-    theta = 0.0
-    if (earlyExercise == false)
-        theta = perturbedOptionPriceTree.root.europeanOptionValue - baseOptionPriceTree.root.europeanOptionValue
-    else
-        theta = perturbedOptionPriceTree.root.americanOptionValue - baseOptionPriceTree.root.americanOptionValue
+    # check: tree type -
+    tree_type_set = Set{Symbol}()
+    push!(tree_type_set,:binary)
+    push!(tree_type_set,:ternary)
+    if (in(modelTreeType,tree_type_set) == false)
+        return PSResult(ArgumentError("Unsupported model tree type"))
     end
+
+    # compute the price tree w/the underlying price -
+    price_tree_1 = nothing
+    if modelTreeType == :binary
+        price_tree_1 = build_binary_price_tree(assetSet, parameters, underlyingAssetPrice)
+    elseif modelTreeType == :ternary
+        price_tree_1 = build_ternary_price_tree(assetSet, parameters, underlyingAssetPrice)        
+    end
+
+    # create a new parameters w/one less day -
+    perturbedParameters = deepcopy(parameters)
+    perturbedParameters = (perturbedParameters.timeToExercise - (1.0/365.0))
+
+    # compute the price tree w/the updated time to excercise -
+    price_tree_2 = nothing
+    if modelTreeType == :binary
+        price_tree_2 = build_binary_price_tree(assetSet, perturbedParameters, underlyingAssetPrice)
+    elseif modelTreeType == :ternary
+        price_tree_2 = build_ternary_price_tree(assetSet, perturbedParameters, underlyingAssetPrice)        
+    end
+
+    # compute the option cost w/price_tree_1 -
+    option_price_1 = nothing
+    result = option_contract_price(price_tree_1, parameters)
+    if (typeof(result.value) == PSError)
+        return result
+    else
+        option_price_1 = result.value
+    end
+
+    # compute the option cosr w/price_tree_2
+    option_price_2 = nothing
+    result = option_contract_price(price_tree_2, perturbedParameters)
+    if (typeof(result.value) == PSError)
+        return result
+    else
+        option_price_2 = result.value
+    end
+
+    # compute theta -
+    theta = option_price_2 - option_price_1
 
     # return -
     return theta
