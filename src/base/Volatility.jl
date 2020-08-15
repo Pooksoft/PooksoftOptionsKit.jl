@@ -15,8 +15,6 @@ function _iv_objective_function(x, assetSet::Set{PSAbstractAsset}, parameters::P
     # get the estimated value -
     estimatedPriceValue = result.value
 
-    @show (perturbedVolatility, estimatedPriceValue, baseAssetPriceValue, optionPriceValue)
-
     # compute the error -
     error_term = (optionPriceValue - estimatedPriceValue)
 
@@ -49,24 +47,32 @@ function estimate_implied_volatility(contract::PSAbstractAsset, parameters::PSOp
     return Optim.minimizer(opt_result)[1]
 end
 
-function compute_weighted_volatility(data::DataFrame,weightKey::Symbol, volatilityKey::Symbol)::PSResult
+function compute_weighted_volatility(data::DataFrame, weightKey::Symbol, volatilityKey::Symbol)::PSResult
 
     # initialize -
-    volatility_array = Array{Float64,1}()
+    tmp_array = Array{Float64,1}()
+    volatility_value = nothing
 
     # sum the wght key -
-    wght_sum = sum(data[!,weightKey])
     iv_array = data[!,volatilityKey]
     wght_array = data[!,weightKey]
 
     # main loop -
     for (index, iv_value) in enumerate(iv_array)
         
-        # compute weighted iv value -
-        value = wght_array[index]*iv_array[index]
+        # get weight value -
+        wght_value = wght_array[index]
+
+        # compute weighted iv value numerator -
+        value = wght_value*iv_array[index]
+        push!(tmp_array,value)
     end
 
+    # compute value -
+    wght_sum = sum(wght_array)
+    volatility_value = sum(tmp_array)*(1/wght_sum)
+
     # return -
-    return PSResult(volatility_array)
+    return PSResult(volatility_value)
 end
 # ---------------------------------------------------------------- #

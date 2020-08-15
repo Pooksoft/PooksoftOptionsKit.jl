@@ -16,6 +16,7 @@ export option_contract_price
 
 # implied volatility -
 export estimate_implied_volatility
+export compute_weighted_volatility
 
 # the greeks -
 export delta
