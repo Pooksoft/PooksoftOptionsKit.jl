@@ -23,6 +23,7 @@
             "strike_price":50.0,
             "premium_value":2.24,
             "number_of_contracts":1,
+            "contract_multiplier":1,
             "expiration":"2020-08-07"
         }
     ]

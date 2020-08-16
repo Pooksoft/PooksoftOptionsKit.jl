@@ -8,7 +8,7 @@
 # dividendRate::Float64
 
 function delta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
-    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::Float64
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
     
@@ -64,12 +64,12 @@ function delta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
     delta = option_price_2 - option_price_1
 
     # return -
-    return delta
+    return PSResult(delta)
 
 end
 
 function theta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
-    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::Float64
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::PSResult
     
     # TODO: checks ...
     
@@ -128,10 +128,11 @@ function theta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
     theta = option_price_2 - option_price_1
 
     # return -
-    return theta
+    return PSResult(theta)
 end
 
-function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; earlyExercise::Bool = false)::Float64
+function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+    earlyExercise::Bool = false)::PSResult
 
     # TODO: checks -
 
@@ -154,11 +155,15 @@ function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
     # compute an updated delta -
     perturbed_delta = delta(assetSet, parameters, (underlyingAssetPrice + 1.0); earlyExercise=earlyExercise)
 
+    # diff -
+    gamma = (perturbed_delta - base_delta)
+
     # compute the difference and return -
-    return (perturbed_delta - base_delta)
+    return PSResult(gamma)
 end
 
-function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; earlyExercise::Bool = false)::Float64
+function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+    earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
     
@@ -219,11 +224,11 @@ function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPara
     vega = option_price_2 - option_price_1
 
     # return -
-    return vega
+    return PSResult(vega)
 end
 
 function rho(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, 
-    optionContractType::Symbol = :call, earlyExercise::Bool = false)::Float64
+    optionContractType::Symbol = :call, earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
     
@@ -284,5 +289,5 @@ function rho(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :
     rho = option_price_2 - option_price_1
 
     # return -
-    return rho
+    return PSResult(rho)
 end

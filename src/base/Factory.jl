@@ -16,13 +16,14 @@ function _build_call_contract_object(data::Dict{String,Any})
     premium_value = data["premium_value"]
     number_of_contracts = data["number_of_contracts"]
     expiration_date_string = data["expiration"]
+    contract_multuplier = data["contract_multiplier"]
 
     # TODO - check sense, is this legit?
     # TODO - check is date string formatting correct?
 
     # build -
     callOptionContract = PSCallOptionContract(symbol, Date(expiration_date_string), strike_price, premium_value, number_of_contracts; 
-        sense=Symbol(sense))
+        sense=Symbol(sense), contractMultiplier=contract_multuplier)
 
     # return -
     return PSResult(callOptionContract)
@@ -36,13 +37,14 @@ function _build_put_contract_object(data::Dict{String,Any})
     premium_value = data["premium_value"]
     number_of_contracts = data["number_of_contracts"]
     expiration_date_string = data["expiration"]
+    contract_multiplier = data["contract_multiplier"]
 
     # TODO - check sense, is this legit?
     # TODO - check is date string formatting correct?
 
     # build -
     putOptionContract = PSPutOptionContract(symbol, Date(expiration_date_string), strike_price, premium_value, number_of_contracts; 
-        sense=Symbol(sense))
+        sense=Symbol(sense),contractMultiplier=contract_multuplier)
 
     # return -
     return PSResult(putOptionContract)

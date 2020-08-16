@@ -9,8 +9,6 @@ function _setup(path_to_config_file::String)
     # initialize -
     lattice_model = nothing
     asset_set = nothing
-    asset_price_array = nothing
-    data_array_at_exp = nothing
     
     # load the lattice model -
     result = build_simulation_lattice_data_structure(path_to_config_file)
@@ -36,9 +34,13 @@ function _setup(path_to_config_file::String)
 end
 
 # setup -
-path_to_design_file = "$(pwd())/tests/config/IronCondor-F.json"
+path_to_design_file = "$(pwd())/tests/config/Call.json"
 result = _setup(path_to_design_file)
 problem_setup = nothing
 if (isa(result.value,Exception) == false)
     problem_setup = result.value
 end
+
+# call to the greeks -
+underlyingAssetPrice = 54.17
+result = delta(problem_setup.assets,problem_setup.model,underlyingAssetPrice)
