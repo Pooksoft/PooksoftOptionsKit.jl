@@ -19,7 +19,7 @@
         {
             "ticker_symbol":"AMD",
             "type":"call",
-            "sense":"sell",
+            "sense":"buy",
             "strike_price":50.0,
             "premium_value":2.24,
             "number_of_contracts":1,

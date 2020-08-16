@@ -43,4 +43,30 @@ end
 
 # call to the greeks -
 underlyingAssetPrice = 54.17
+delta_value = 0.0
 result = delta(problem_setup.assets,problem_setup.model,underlyingAssetPrice)
+if (isa(result.value, Exception) == false)
+    delta_value = result.value
+end
+
+# calculate theta -
+theta_value = 0.0
+result = theta(problem_setup.assets, problem_setup.model, underlyingAssetPrice)
+if (isa(result.value, Exception) == false)
+    theta_value = result.value
+end
+
+# calculate vega -
+vega_value = 0.0
+result = vega(problem_setup.assets, problem_setup.model, underlyingAssetPrice)
+if (isa(result.value, Exception) == false)
+    vega_value = result.value
+end
+
+
+# calculate rho -
+rho_value = 0.0
+result = rho(problem_setup.assets, problem_setup.model, underlyingAssetPrice)
+if (isa(result.value, Exception) == false)
+    rho_value = result.value
+end

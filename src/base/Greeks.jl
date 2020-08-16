@@ -132,7 +132,7 @@ function theta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
 end
 
 function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
-    earlyExercise::Bool = false)::PSResult
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::PSResult
 
     # TODO: checks -
 
@@ -163,7 +163,7 @@ function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
 end
 
 function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
-    earlyExercise::Bool = false)::PSResult
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
     
@@ -227,8 +227,8 @@ function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPara
     return PSResult(vega)
 end
 
-function rho(parameters::PSOptionKitPricingParameters; modelTreeType::Symbol = :binary, 
-    optionContractType::Symbol = :call, earlyExercise::Bool = false)::PSResult
+function rho(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
     
