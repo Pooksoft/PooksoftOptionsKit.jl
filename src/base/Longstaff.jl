@@ -15,4 +15,6 @@ function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, mode
     # setup the price table -
     price_table = transpose(X)
 
+    # return -
+    return PSResult{Array{Float64,2}}(price_table)
 end
