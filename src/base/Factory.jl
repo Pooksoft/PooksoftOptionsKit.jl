@@ -69,7 +69,7 @@ end
 # ----------------------------------------------------------------------------------------------------------- #
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
-function build_simulation_asset_set(pathToSimulationFile::String)::PSResult
+function build_simulation_contract_set(pathToSimulationFile::String)::PSResult
 
     # TODO: check - is this a legit path -
 

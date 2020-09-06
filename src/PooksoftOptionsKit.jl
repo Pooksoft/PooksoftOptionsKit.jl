@@ -6,7 +6,7 @@ include("Include.jl")
 # export methods -
 export compute_option_profit_and_loss_at_expiration
 export build_simulation_lattice_data_structure
-export build_simulation_asset_set
+export build_simulation_contract_set
 export build_simulation_price_array
 
 # methods for pricing options (uses binary tree)
