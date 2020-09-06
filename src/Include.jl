@@ -10,6 +10,7 @@ using JSON
 using ColorTypes
 using DataFrames
 @reexport using PookTradeBase
+@reexport using PooksoftAssetModelingKit
 
 # include my code -
 include("./base/Types.jl")
@@ -22,3 +23,4 @@ include("./base/Compute.jl")
 include("./base/Factory.jl")
 include("./base/Volatility.jl")
 include("./base/Utility.jl")
+include("./base/Longstaff.jl")

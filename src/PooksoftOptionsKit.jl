@@ -13,6 +13,7 @@ export build_simulation_price_array
 export build_binary_price_tree
 export build_ternary_price_tree
 export option_contract_price
+export longstaff_option_contract_price
 
 # implied volatility -
 export estimate_implied_volatility

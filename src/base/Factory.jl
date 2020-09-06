@@ -80,7 +80,7 @@ function build_simulation_asset_set(pathToSimulationFile::String)::PSResult
     simulation_dictionary = JSON.parsefile(pathToSimulationFile)
 
     # grab the list of asset dictionaries -
-    asset_dictionary_array = simulation_dictionary["asset_set_parameters"]
+    asset_dictionary_array = simulation_dictionary["contract_set_parameters"]
     for (index, asset_dictionary) in enumerate(asset_dictionary_array)
         
         # initialize -
@@ -113,11 +113,11 @@ function build_simulation_lattice_data_structure(pathToSimulationFile::String)::
     simulation_dictionary = JSON.parsefile(pathToSimulationFile)
 
     # grab the lattice parameters -
-    lattice_parameters = simulation_dictionary["lattice_model_parameters"]
+    lattice_parameters = simulation_dictionary["underlying_model_parameters"]
     number_of_levels = lattice_parameters["number_of_levels"]
-    implied_volatility = lattice_parameters["implied_volatility"]
+    implied_volatility = lattice_parameters["price_volatility"]
     days_to_expiration = lattice_parameters["days_to_expiration"]
-    risk_free_rate = lattice_parameters["risk_free_rate"]
+    risk_free_rate = lattice_parameters["price_growth_rate"]
     dividend_rate = lattice_parameters["dividend_rate"]
 
     # build lattice object -
@@ -136,9 +136,9 @@ function build_simulation_price_array(pathToSimulationFile::String)::PSResult
     simulation_dictionary = JSON.parsefile(pathToSimulationFile)
 
     # grab the asset_price_array parameters -
-    asset_price_parameters = simulation_dictionary["asset_price_array_parameters"]
-    price_start = asset_price_parameters["asset_price_start"]
-    price_stop = asset_price_parameters["asset_price_stop"]
+    asset_price_parameters = simulation_dictionary["underlying_price_simulation_range"]
+    price_start = asset_price_parameters["underlying_price_start"]
+    price_stop = asset_price_parameters["underlying_price_stop"]
     number_of_steps = asset_price_parameters["number_of_steps"]
 
     # build the array -
