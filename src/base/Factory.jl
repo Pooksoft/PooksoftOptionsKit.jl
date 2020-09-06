@@ -69,7 +69,7 @@ end
 # ----------------------------------------------------------------------------------------------------------- #
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
-function build_simulation_contract_set(simulation_dictionary::Dictionary{String,Any})::PSResult
+function build_simulation_contract_set(simulation_dictionary::Dict{String,Any})::PSResult
 
     # TODO: check - do we have the correct keys?
 
