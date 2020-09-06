@@ -71,6 +71,9 @@ end
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
 function build_simulation_contract_set(simulation_dictionary::Dict{String,Any})::PSResult
 
+    # initialize -
+    asset_set = Set{PSAbstractAsset}()
+
     # TODO: check - do we have the correct keys?
 
     # grab the list of asset dictionaries -
@@ -102,9 +105,6 @@ end
 function build_simulation_contract_set(pathToSimulationFile::String)::PSResult
 
     # TODO: check - is this a legit path -
-
-    # initialize -
-    asset_set = Set{PSAbstractAsset}()
 
     # load the experimet file -
     simulation_dictionary = JSON.parsefile(pathToSimulationFile)
