@@ -69,15 +69,9 @@ end
 # ----------------------------------------------------------------------------------------------------------- #
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
-function build_simulation_contract_set(pathToSimulationFile::String)::PSResult
+function build_simulation_contract_set(simulation_dictionary::Dictionary{String,Any})::PSResult
 
-    # TODO: check - is this a legit path -
-
-    # initialize -
-    asset_set = Set{PSAbstractAsset}()
-
-    # load the experimet file -
-    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+    # TODO: check - do we have the correct keys?
 
     # grab the list of asset dictionaries -
     asset_dictionary_array = simulation_dictionary["contract_set_parameters"]
@@ -103,6 +97,20 @@ function build_simulation_contract_set(pathToSimulationFile::String)::PSResult
 
     # return -
     return PSResult(asset_set)
+end
+
+function build_simulation_contract_set(pathToSimulationFile::String)::PSResult
+
+    # TODO: check - is this a legit path -
+
+    # initialize -
+    asset_set = Set{PSAbstractAsset}()
+
+    # load the experimet file -
+    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+
+    # build the contract set -
+    return build_simulation_contract_set(simulation_dictionary)
 end
 
 function build_simulation_lattice_data_structure(pathToSimulationFile::String)::PSResult
