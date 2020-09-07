@@ -569,7 +569,7 @@ version = "0.1.0"
 
 [[PooksoftAssetModelingKit]]
 deps = ["CSV", "DataFrames", "Dates", "DiffEqFinancial", "DifferentialEquations", "Distributions", "PookTradeBase", "PyPlot", "Query", "Reexport", "Statistics"]
-git-tree-sha1 = "cc86bfaaf3d54374504b5fffba16168b5a9a9276"
+git-tree-sha1 = "bee977e49385e8516890fc21145ef7ecabaaf4f3"
 repo-rev = "master"
 repo-url = "https://github.com/Pooksoft/PooksoftAssetModelingKit.jl.git"
 uuid = "30c3b604-477b-4a1f-9f80-c60d6f60ac5b"
@@ -698,9 +698,9 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [[SIMDPirates]]
 deps = ["VectorizationBase"]
-git-tree-sha1 = "26ccdd1466f3071e27e81b43216ea238b62c0c42"
+git-tree-sha1 = "450d163d3279a1d35e3aad3352a5167ef21b84a4"
 uuid = "21efa798-c60a-11e8-04d3-e1a92915a26a"
-version = "0.8.24"
+version = "0.8.25"
 
 [[SLEEFPirates]]
 deps = ["Libdl", "SIMDPirates", "VectorizationBase"]
@@ -825,6 +825,14 @@ deps = ["AbstractAlgebra", "Combinatorics", "DataStructures", "NaNMath", "Specia
 git-tree-sha1 = "3cd0b83054bd456ac5c8740900ef4d1f830462c0"
 uuid = "d1185830-fcd6-423d-90d6-eec64667417b"
 version = "0.5.1"
+
+[[TOML]]
+deps = ["Dates"]
+git-tree-sha1 = "cc544eef6bc464417d7fd5ad2eb385169ec26ac5"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaLang/TOML.jl.git"
+uuid = "191fdcea-f9f2-43e0-b922-d33f71e2abc3"
+version = "0.4.0"
 
 [[TableShowUtils]]
 deps = ["DataValues", "Dates", "JSON", "Markdown", "Test"]

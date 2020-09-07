@@ -11,6 +11,7 @@ using ColorTypes
 using DataFrames
 @reexport using PookTradeBase
 @reexport using PooksoftAssetModelingKit
+@reexport using PooksoftAlphaVantageDataStore
 
 # include my code -
 include("./base/Types.jl")
