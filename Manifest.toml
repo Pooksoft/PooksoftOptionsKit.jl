@@ -312,6 +312,12 @@ git-tree-sha1 = "62909c3eda8a25b5673a367d1ad2392ebb265211"
 uuid = "01680d73-4ee2-5a08-a1aa-533608c188bb"
 version = "0.3.0"
 
+[[HTTP]]
+deps = ["Base64", "Dates", "IniFile", "MbedTLS", "Sockets"]
+git-tree-sha1 = "2ac03263ce44be4222342bca1c51c36ce7566161"
+uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+version = "0.8.17"
+
 [[IfElse]]
 git-tree-sha1 = "28e837ff3e7a6c3cdb252ce49fb412c8eb3caeef"
 uuid = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
@@ -321,6 +327,12 @@ version = "0.1.0"
 git-tree-sha1 = "f5fc07d4e706b84f72d54eedcc1c13d92fb0871c"
 uuid = "d25df0c9-e2be-5dd7-82c8-3ad0b3e990b9"
 version = "0.1.2"
+
+[[IniFile]]
+deps = ["Test"]
+git-tree-sha1 = "098e4d2c533924c921f9f9847274f2ad89e018b8"
+uuid = "83e8ac13-25f8-5344-8a64-a9f2b223428f"
+version = "0.5.0"
 
 [[InteractiveUtils]]
 deps = ["Markdown"]
@@ -442,6 +454,18 @@ deps = ["LinearAlgebra", "Random", "Test"]
 git-tree-sha1 = "cebc71d929a846dda61400f1cf3ba69c7e75fa63"
 uuid = "a3b82374-2e81-5b9e-98ce-41277c0e4c87"
 version = "0.0.4"
+
+[[MbedTLS]]
+deps = ["Dates", "MbedTLS_jll", "Random", "Sockets"]
+git-tree-sha1 = "426a6978b03a97ceb7ead77775a1da066343ec6e"
+uuid = "739be429-bea8-5141-9913-cc70e7f3736d"
+version = "1.0.2"
+
+[[MbedTLS_jll]]
+deps = ["Libdl", "Pkg"]
+git-tree-sha1 = "c0b1286883cac4e2b617539de41111e0776d02e8"
+uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.16.8+0"
 
 [[Missings]]
 deps = ["DataAPI"]
@@ -565,6 +589,14 @@ git-tree-sha1 = "b209d3a0f1772894427ae1ae129d9c5ce1cec856"
 repo-rev = "master"
 repo-url = "https://github.com/Pooksoft/PookTradeBase.git"
 uuid = "a7d80504-cf70-4d3c-ae4d-49fe0971309a"
+version = "0.1.0"
+
+[[PooksoftAlphaVantageDataStore]]
+deps = ["CSV", "DataFrames", "Dates", "HTTP", "JSON", "Logging", "PookTradeBase", "Reexport", "TOML", "Test"]
+git-tree-sha1 = "89a3583c94e4a9245687e49b94b335266ee3de01"
+repo-rev = "master"
+repo-url = "https://github.com/Pooksoft/PooksoftAlphaVantageDataStore.jl.git"
+uuid = "c3556c8d-123e-4c4d-a897-a0e9ebae0e6b"
 version = "0.1.0"
 
 [[PooksoftAssetModelingKit]]
