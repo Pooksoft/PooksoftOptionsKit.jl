@@ -5,10 +5,10 @@ const path_to_package = dirname(pathof(@__MODULE__))
 using PyPlot
 using Dates
 using Optim
-using Reexport
 using JSON
 using ColorTypes
 using DataFrames
+using Reexport
 @reexport using PookTradeBase
 @reexport using PooksoftAssetModelingKit
 @reexport using PooksoftAlphaVantageDataStore
