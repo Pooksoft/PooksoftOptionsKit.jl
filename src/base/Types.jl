@@ -127,3 +127,13 @@ struct PSPutOptionContract <: PSAbstractAsset
         this = new(assetSymbol, strikePrice, expirationDate, premimumValue, numberOfContracts, sense, contractMultiplier)
     end
 end
+
+struct LocalExpectationRegressionModel 
+    a0::Float64
+    a1::Float64
+    a2::Float64
+
+    function LongstaffRegressionModel(a0,a1,a2)
+        this = new(a0,a1,a2)
+    end
+end
