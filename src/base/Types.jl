@@ -133,7 +133,7 @@ struct LocalExpectationRegressionModel
     a1::Float64
     a2::Float64
 
-    function LongstaffRegressionModel(a0,a1,a2)
+    function LocalExpectationRegressionModel(a0,a1,a2)
         this = new(a0,a1,a2)
     end
 end

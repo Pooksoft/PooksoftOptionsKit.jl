@@ -1,8 +1,50 @@
 # --- PRIVATE METHODS --------------------------------------------------------------------------------------- #
 function _fit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
+
+    # what is the size of X?
+    number_of_paths = length(X)
+        
+    # initialize -
+    M = zeros(number_of_paths,3)
+
+    # compute the M matrix -
+    for path_index = 1:number_of_paths
+        M[path_index,1] = 1.0
+        M[path_index,2] = X[path_index]
+        M[path_index,3] = (X[path_index])^2
+    end
+
+    # compute the LS parameters -
+    a = inv(transpose(M)*M)*transpose(M)*Y
+
+    # Wrap -
+    model = LocalExpectationRegressionModel(a[1],a[2],a[3])
+
+    # return -
+    return PSResult{LocalExpectationRegressionModel}(model)
 end
 
 function _evaluate_local_regression_model(model::LocalExpectationRegressionModel,X::Array{Float64,1})::PSResult
+
+    # initialize -
+    f_value_array = Array{Float64,1}()
+    
+    # get the parameters for the model -
+    a0 = model.a0
+    a1 = model.a1
+    a2 = model.a2
+
+    # compute -
+    for value in X
+        term_1 = a0
+        term_2 = a1*value
+        term_3 = a2*(value)^2
+        f_value = term_1+term_2+term_3
+        push!(f_value_array,f_value)
+    end
+
+    # return -
+    return PSResult{Array{Float64,1}}(f_value_array)
 end
 
 function _calculate_intrinsic_value_trade_legs(contractSet::Set{PSAbstractAsset},underlyingPrice::Float64)::PSResult
@@ -104,9 +146,9 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             X = underlying_price_table[:,time_index-1]
             
             # which of the X's are ITM?
-            itm_index = findall(x->x>0, option_cost_table[path_index,time_index-1])
-            Xdata = X[itm_index]
-            Ydata = Y[itm_index].*exp(-riskFreeRate*timeMultiplier)    # discounted back to today
+            itm_index_array = findall(x->x>0, option_cost_table[path_index,time_index-1])
+            Xdata = X[itm_index_array]
+            Ydata = Y[itm_index_array].*exp(-riskFreeRate*timeMultiplier)    # discounted back to today
 
             # compute the local model -
             result = _fit_local_regression_model(Xdata,Ydata)
@@ -117,10 +159,24 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
 
             # which paths will have early an early excercise event?
             # lets compare what we would get if we excercised now, versus waiting -
-            
+            result = _evaluate_local_regression_model(local_model,XData)
+            if (isa(result.value,Exception) == true)
+                return result
+            end
+            Ycontinuation = result.value
 
+            # ok, so let's compare the excercise value versus the Ycontinuation -
+            for (index,itm_index) in enumerate(itm_index_array)
+                excercise_value = option_cost_table[itm_index,time_index-1]
+                continuation_value = Ycontinuation[index]
+                if (excercise_value>continuation_value)
+                    option_cost_table[itm_index,time_index-1] = excercise_value
+                    option_cost_table[itm_index,time_index] = 0.0
+                end
+            end
+
+            # go around again -
         end
-
     end
 
     # return -
@@ -146,8 +202,16 @@ function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, mode
     # setup the price table -
     underlying_price_table = transpose(X)
 
+    # call the valuation method -
+    return longstaff_option_contract_price(contractSet, underlying_price_table; 
+        earlyExercise=earlyExercise, riskFreeRate=riskFreeRate, timeMultiplier=timeMultiplier)
+end
+
+function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, underlyingPriceTable::Array{Float64,2}; 
+    earlyExercise::Bool = false, riskFreeRate::Float64 = 0.015, timeMultiplier=1.0)::PSResult
+
     # update the option cost table -
-    result = _calculate_options_cost_table(contractSet, underlying_price_table; earlyExercise = earlyExercise)
+    result = _calculate_options_cost_table(contractSet, underlyingPriceTable; earlyExercise = earlyExercise)
     if (isa(result.value,Exception) == true)
         return result
     end
