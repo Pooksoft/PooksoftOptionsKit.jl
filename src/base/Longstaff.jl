@@ -207,6 +207,9 @@ function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, mode
         earlyExercise=earlyExercise, riskFreeRate=riskFreeRate, timeMultiplier=timeMultiplier)
 end
 
+"""
+    longstaff_option_contract_price
+"""
 function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, underlyingPriceTable::Array{Float64,2}; 
     earlyExercise::Bool = false, riskFreeRate::Float64 = 0.015, timeMultiplier=1.0)::PSResult
 
