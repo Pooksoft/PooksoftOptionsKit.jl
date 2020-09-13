@@ -161,12 +161,14 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
                 
                 excercise_value = intrinsic_value_table[itm_index,time_index-1]
                 continuation_value = Ycontinuation[index]
-                
-                @show (excercise_value,continuation_value)
-                
+            
                 if (excercise_value>continuation_value)
                     option_cost_table[itm_index,time_index-1] = excercise_value
-                    option_cost_table[itm_index,time_index] = 0.0
+                    
+                    # we excercised - so all future times are equal to zero
+                    for local_time_index = time_index:number_of_time_steps
+                        option_cost_table[itm_index,local_time_index] = 0.0
+                    end
                 else
                     option_cost_table[itm_index,time_index-1] = 0.0
                 end
