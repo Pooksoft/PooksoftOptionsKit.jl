@@ -164,10 +164,11 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             
                 if (excercise_value>continuation_value)
                     option_excercise_reward_table[itm_index,time_index-1] = excercise_value
+                    #option_excercise_reward_table[itm_index,local_time_index] = 0.0
                     
                     # we excercised - so all future times are equal to zero
                     for local_time_index = time_index:number_of_time_steps
-                        option_excercise_reward_table[itm_index,local_time_index] = 0.0
+                        # option_excercise_reward_table[itm_index,local_time_index] = 0.0
                     end
                 else
                     option_excercise_reward_table[itm_index,time_index-1] = 0.0
