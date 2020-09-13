@@ -80,7 +80,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     option_cost_table = zeros(number_of_paths,number_of_time_steps)
 
     # initialize an empty profit_loss_table -
-    profit_loss_table = zeros(number_of_paths,number_of_time_steps)
+    intrinsic_value_table = zeros(number_of_paths,number_of_time_steps)
 
     # ok, so before we do anything about excerising the option contract, lets complete the P/L table -
     for path_index = 1:number_of_paths
@@ -97,13 +97,80 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             total_intrinsic_value = result.value
 
             # capture this value -
-            profit_loss_table[path_index,time_index] = total_intrinsic_value
+            intrinsic_value_table[path_index,time_index] = total_intrinsic_value
         end
     end
 
-
     # ok depending upon whether this is an American (USA,USA!) or an European option 
     # we do different things = earlyExercise = false is a European option
+    if (earlyExercise == false)
+        
+        # what is the deltaT?
+        ΔT = (number_of_time_steps*timeMultiplier)*(1.0/364.5)
+        d = exp(-1*riskFreeRate*ΔT)
+
+        # compute the value -
+        for path_index = 1:number_of_paths
+            value = d*(intrinsic_value_table[path_index,end])
+            option_cost_table[path_index,end] = value
+        end        
+    else
+
+        # What is my d?
+        ΔT = (1.0*timeMultiplier)*(1.0/364.5)
+        d = exp(-1*riskFreeRate*ΔT)
+
+        # initialize the last col of the cost table -
+        for path_index = 1:number_of_paths
+            value = 1.0*(intrinsic_value_table[path_index,end])
+            option_cost_table[path_index,end] = value
+        end   
+
+        # so the option cost table
+        backward_index_collection = collect(range(number_of_time_steps,step=-1,stop=2))
+        for time_index in backward_index_collection
+
+            # get all the Y's for the regression -
+            Y = intrinsic_value_table[:,time_index]
+
+            # get all of the X's (we'll filter out OTM rows later) -
+            X = underlying_price_table[:,time_index-1]
+            
+            # which of the X's are ITM?
+            itm_index_array = findall(x->x>0, intrinsic_value_table[:,time_index-1])
+            Xdata = X[itm_index_array]
+            Ydata = Y[itm_index_array].*d 
+
+            # compute the local model -
+            result = _fit_local_regression_model(Xdata,Ydata)
+            if (isa(result.value,Exception) == true)
+                return result
+            end
+            local_model = result.value
+
+            # which paths will have early an early excercise event?
+            # lets compare what we would get if we excercised now, versus waiting -
+            result = _evaluate_local_regression_model(local_model,Xdata)
+            if (isa(result.value,Exception) == true)
+                return result
+            end
+            Ycontinuation = result.value
+
+            # ok, so let's compare the excercise value versus the Ycontinuation -
+            for (index,itm_index) in enumerate(itm_index_array)
+                excercise_value = option_cost_table[itm_index,time_index-1]
+                continuation_value = Ycontinuation[index]
+                if (excercise_value>continuation_value)
+                    option_cost_table[itm_index,time_index-1] = excercise_value
+                    option_cost_table[itm_index,time_index] = 0.0
+                else
+                    option_cost_table[itm_index,time_index-1] = 0.0
+                end
+            end
+        end
+    end
+
+    
     # if (earlyExercise == false)
         
     #     # only the last col will *potentially* have non-zero values
@@ -207,7 +274,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     # end
 
     # return -
-    return PSResult{Array{Float64,2}}(profit_loss_table)
+    return PSResult{Array{Float64,2}}(option_cost_table)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
