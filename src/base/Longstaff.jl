@@ -54,14 +54,16 @@ function _calculate_intrinsic_value_trade_legs(contractSet::Set{PSAbstractAsset}
     
     # main loop -
     for contract in contractSet
-        iv_value = intrinsic_value(contract,underlyingPrice)
+        result = intrinsic_value(contract,underlyingPrice)
+        if (isa(result.value,Exception) == true)
+            return result
+        end
+        iv_value = result.value.iv
         push!(tmp_array,iv_value)
     end
 
     # total intrinsic value -
     total_intrinsic_value = sum(tmp_array)
-
-    @show (total_intrinsic_value, underlyingPrice)
 
     # return -
     return PSResult{Float64}(total_intrinsic_value)

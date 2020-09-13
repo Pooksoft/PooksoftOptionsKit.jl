@@ -1,7 +1,8 @@
-function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Float64)::Float64
+function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Float64)::PSResult
 
     # initialize -
     iv = 0.0
+    pl = 0.0
     
     # get data from the contract object -
     sense = contract.sense
@@ -18,7 +19,8 @@ function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Floa
         profitLossValue = (payoffValue - premiumValue) 
         
         # compute the intrinsic value -
-        iv = (contract_multiplier)*(number_of_contracts)*profitLossValue
+        iv = (contract_multiplier)*(number_of_contracts)*payoffValue
+        pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
 
     elseif (sense == :sell)
         
@@ -27,17 +29,22 @@ function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Floa
         profitLossValue = (payoffValue + premiumValue) 
         
         # compute the intrinsic value -
-        iv = (contract_multiplier)*(number_of_contracts)*profitLossValue
+        iv = (contract_multiplier)*(number_of_contracts)*payoffValue
+        pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
     end
 
+    # make a named tuple -
+    named_tuple = (intrinsic_value=iv,payoff_value=pl)
+
     # return -
-    return iv
+    return PSResult(named_tuple)
 end
 
-function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float64)::Float64
+function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float64)::PSResult
 
     # initialize -
     iv = 0.0
+    pl = 0.0
     
     # get data from the contract object -
     sense = contract.sense
@@ -54,7 +61,8 @@ function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float
         profitLossValue = (payoffValue - premiumValue) 
 
         # compute the intrinsic value -
-        iv = (contract_multiplier)*(number_of_contracts)*profitLossValue
+        pv = (contract_multiplier)*(number_of_contracts)*profitLossValue
+        iv = (contract_multiplier)*(number_of_contracts)*payoffValue
 
     elseif (sense == :sell)
 
@@ -63,17 +71,22 @@ function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float
         profitLossValue = (payoffValue + premiumValue)
 
         # compute the intrinsic value -
-        iv = (contract_multiplier)*(number_of_contracts)*profitLossValue
+        pv = (contract_multiplier)*(number_of_contracts)*profitLossValue
+        iv = (contract_multiplier)*(number_of_contracts)*payoffValue
     end
     
+    # make a named tuple -
+    named_tuple = (intrinsic_value=iv,payoff_value=pl)
+
     # return -
-    return iv
+    return PSResult(named_tuple)
 end
 
-function intrinsic_value(equityObject::PSEquityAsset, currentPriceValue::Float64)::Float64
+function intrinsic_value(equityObject::PSEquityAsset, currentPriceValue::Float64)::PSResult
 
     # initialize -
     iv = 0.0
+    pl = 0.0
     
     # get data from equityObject -
     purchasePricePerShare = equityObject.purchasePricePerShare
@@ -82,6 +95,9 @@ function intrinsic_value(equityObject::PSEquityAsset, currentPriceValue::Float64
     # compute the intrinsic value -
     iv = numberOfShares*(currentPriceValue - purchasePricePerShare)
 
+    # make a named tuple -
+    named_tuple = (intrinsic_value=iv,payoff_value=iv)
+
     # return -
-    return iv
+    return PSResult(named_tuple)
 end

@@ -108,7 +108,11 @@ function _calculate_ternary_node_intrinsic_value(node::PSTernaryPriceTreeNode, a
     price = node.price
 
     # calculate the intrinsic value -
-    iv = intrinsic_value(asset,price) # which iv function that gets called will be handled by multiple dispatch
+    result = intrinsic_value(asset,price) # which iv function that gets called will be handled by multiple dispatch
+    if (isa(result.value,Exception) == true)
+        return result
+    end
+    iv = result.value.iv
 
     # cache the iv in the node -
     push!(node.intrinsicValueSet,iv)
