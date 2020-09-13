@@ -158,8 +158,12 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
 
             # ok, so let's compare the excercise value versus the Ycontinuation -
             for (index,itm_index) in enumerate(itm_index_array)
-                excercise_value = option_cost_table[itm_index,time_index-1]
+                
+                excercise_value = intrinsic_value_table[itm_index,time_index-1]
                 continuation_value = Ycontinuation[index]
+                
+                @show (excercise_value,continuation_value)
+                
                 if (excercise_value>continuation_value)
                     option_cost_table[itm_index,time_index-1] = excercise_value
                     option_cost_table[itm_index,time_index] = 0.0
