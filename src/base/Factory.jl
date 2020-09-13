@@ -44,7 +44,7 @@ function _build_put_contract_object(data::Dict{String,Any})
 
     # build -
     putOptionContract = PSPutOptionContract(symbol, Date(expiration_date_string), strike_price, premium_value, number_of_contracts; 
-        sense=Symbol(sense),contractMultiplier=contract_multuplier)
+        sense=Symbol(sense),contractMultiplier=contract_multiplier)
 
     # return -
     return PSResult(putOptionContract)
