@@ -148,7 +148,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             X = underlying_price_table[:,time_index-1]
             
             # which of the X's are ITM?
-            itm_index_array = findall(x->x>0, option_cost_table[path_index,time_index-1])
+            itm_index_array = findall(x->x>0, option_cost_table[:,time_index-1])
             Xdata = X[itm_index_array]
             Ydata = Y[itm_index_array].*exp(-riskFreeRate*timeMultiplier)    # discounted back to today
 
