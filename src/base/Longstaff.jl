@@ -77,7 +77,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     (number_of_paths,number_of_time_steps) = size(underlying_price_table)
 
     # initialize an empty option_cost_table -
-    option_cost_table = zeros(number_of_paths,number_of_time_steps)
+    option_excercise_reward_table = zeros(number_of_paths,number_of_time_steps)
 
     # initialize an empty profit_loss_table -
     intrinsic_value_table = zeros(number_of_paths,number_of_time_steps)
@@ -112,7 +112,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
         # compute the value -
         for path_index = 1:number_of_paths
             value = d*(intrinsic_value_table[path_index,end])
-            option_cost_table[path_index,end] = value
+            option_excercise_reward_table[path_index,end] = value
         end        
     else
 
@@ -123,7 +123,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
         # initialize the last col of the cost table -
         for path_index = 1:number_of_paths
             value = 1.0*(intrinsic_value_table[path_index,end])
-            option_cost_table[path_index,end] = value
+            option_excercise_reward_table[path_index,end] = value
         end   
 
         # so the option cost table
@@ -163,124 +163,21 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
                 continuation_value = Ycontinuation[index]
             
                 if (excercise_value>continuation_value)
-                    option_cost_table[itm_index,time_index-1] = excercise_value
+                    option_excercise_reward_table[itm_index,time_index-1] = excercise_value
                     
                     # we excercised - so all future times are equal to zero
                     for local_time_index = time_index:number_of_time_steps
-                        option_cost_table[itm_index,local_time_index] = 0.0
+                        option_excercise_reward_table[itm_index,local_time_index] = 0.0
                     end
                 else
-                    option_cost_table[itm_index,time_index-1] = 0.0
+                    option_excercise_reward_table[itm_index,time_index-1] = 0.0
                 end
             end
         end
     end
 
-    
-    # if (earlyExercise == false)
-        
-    #     # only the last col will *potentially* have non-zero values
-    #     for path_index = 1:number_of_paths
-            
-    #         # grab the potential price -
-    #         underlying_price_value = underlying_price_table[path_index, end]
-
-    #         # process each leg of the trade - 
-    #         result = _calculate_intrinsic_value_trade_legs(contractSet, underlying_price_value)
-    #         if (isa(result.value,Exception) == true)
-    #             return result
-    #         end
-    #         total_intrinsic_value = result.value
-
-    #         # capture this value -
-    #         option_cost_table[path_index,end] = total_intrinsic_value
-    #     end
-
-    #     # With a European option, I'm done here - 
-    #     # we'll pop out of the loop, and return the option cost table
-    # else
-
-    #     # fill in the last col (European case)
-    #     for path_index = 1:number_of_paths
-            
-    #         # grab the potential price -
-    #         underlying_price_value = underlying_price_table[path_index,end]
-
-    #         # process each leg of the trade - 
-    #         result = _calculate_intrinsic_value_trade_legs(contractSet, underlying_price_value)
-    #         if (isa(result.value,Exception) == true)
-    #             return result
-    #         end
-    #         total_intrinsic_value = result.value
-
-    #         # capture this value -
-    #         option_cost_table[path_index,end] = total_intrinsic_value
-    #     end
-
-    #     # ok, so if we get here, then I have the "hard" case, an American (USA,USA!) contract
-    #     # we are already filled in the last col -
-    #     backward_index_collection = collect(range(number_of_time_steps,step=-1,stop=2))
-    #     for time_index in backward_index_collection
-            
-    #         # compute the Y for the regression -
-    #         Y = option_cost_table[:,time_index]
-
-    #         # compute the intrinsic value at time-index - 1 
-    #         for path_index = 1:number_of_paths
-            
-    #             # grab the potential price -
-    #             underlying_price_value = underlying_price_table[path_index,time_index-1]
-    
-    #             # process each leg of the trade - 
-    #             result = _calculate_intrinsic_value_trade_legs(contractSet, underlying_price_value)
-    #             if (isa(result.value,Exception) == true)
-    #                 return result
-    #             end
-    #             total_intrinsic_value = result.value
-    
-    #             # capture this value -
-    #             option_cost_table[path_index,time_index-1] = total_intrinsic_value
-    #         end
-
-    #         # get all of the X's (we'll filter out OTM rows later) -
-    #         X = underlying_price_table[:,time_index-1]
-            
-    #         # which of the X's are ITM?
-    #         itm_index_array = findall(x->x>0, option_cost_table[:,time_index-1])
-    #         Xdata = X[itm_index_array]
-    #         Ydata = Y[itm_index_array].*exp(-riskFreeRate*timeMultiplier)    # discounted back to today
-
-    #         # compute the local model -
-    #         result = _fit_local_regression_model(Xdata,Ydata)
-    #         if (isa(result.value,Exception) == true)
-    #             return result
-    #         end
-    #         local_model = result.value
-
-    #         # which paths will have early an early excercise event?
-    #         # lets compare what we would get if we excercised now, versus waiting -
-    #         result = _evaluate_local_regression_model(local_model,Xdata)
-    #         if (isa(result.value,Exception) == true)
-    #             return result
-    #         end
-    #         Ycontinuation = result.value
-
-    #         # ok, so let's compare the excercise value versus the Ycontinuation -
-    #         for (index,itm_index) in enumerate(itm_index_array)
-    #             excercise_value = option_cost_table[itm_index,time_index-1]
-    #             continuation_value = Ycontinuation[index]
-    #             if (excercise_value>continuation_value)
-    #                 option_cost_table[itm_index,time_index-1] = excercise_value
-    #                 option_cost_table[itm_index,time_index] = 0.0
-    #             end
-    #         end
-
-    #         # go around again -
-    #     end
-    # end
-
     # return -
-    return PSResult{Array{Float64,2}}(option_cost_table)
+    return PSResult{Array{Float64,2}}(option_excercise_reward_table)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
