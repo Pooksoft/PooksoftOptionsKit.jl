@@ -176,6 +176,8 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
         end
     end
 
+    @show option_excercise_reward_table
+
     # return - what is going on?
     return PSResult{Array{Float64,2}}(option_excercise_reward_table)
 end
