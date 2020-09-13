@@ -161,7 +161,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
 
             # which paths will have early an early excercise event?
             # lets compare what we would get if we excercised now, versus waiting -
-            result = _evaluate_local_regression_model(local_model,XData)
+            result = _evaluate_local_regression_model(local_model,Xdata)
             if (isa(result.value,Exception) == true)
                 return result
             end
