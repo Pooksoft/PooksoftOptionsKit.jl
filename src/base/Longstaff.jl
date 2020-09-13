@@ -55,6 +55,9 @@ function _calculate_intrinsic_value_trade_legs(contractSet::Set{PSAbstractAsset}
     # main loop -
     for contract in contractSet
         iv_value = intrinsic_value(contract,underlyingPrice)
+        
+        @show (iv_value, underlyingPrice)
+        
         push!(tmp_array,iv_value)
     end
 
@@ -84,7 +87,6 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             
             # grab the potential price -
             underlying_price_value = underlying_price_table[path_index, end]
-            @show underlying_price_value
 
             # process each leg of the trade - 
             result = _calculate_intrinsic_value_trade_legs(contractSet, underlying_price_value)
