@@ -58,7 +58,7 @@ function _calculate_intrinsic_value_trade_legs(contractSet::Set{PSAbstractAsset}
         if (isa(result.value,Exception) == true)
             return result
         end
-        iv_value = result.value.iv
+        iv_value = result.value.intrinsic_value
         push!(tmp_array,iv_value)
     end
 

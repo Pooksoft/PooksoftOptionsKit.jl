@@ -112,7 +112,7 @@ function _calculate_ternary_node_intrinsic_value(node::PSTernaryPriceTreeNode, a
     if (isa(result.value,Exception) == true)
         return result
     end
-    iv = result.value.iv
+    iv = result.value.intrinsic_value
 
     # cache the iv in the node -
     push!(node.intrinsicValueSet,iv)
