@@ -240,6 +240,6 @@ function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, unde
     option_price_table = result.value
 
     # return -
-    return PSResult{Array{Float64,2}}(option_price_table)
+    return PSResult{Float64}(option_price_table)
 end
 # ----------------------------------------------------------------------------------------------------------- #
