@@ -196,10 +196,10 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     end
 
     # compute the price -
-    μ = (1/number_of_paths)*sum(final_option_cost_array)
+    #μ = (1/number_of_paths)*sum(final_option_cost_array)
 
     # return - what is going on?
-    return PSResult{Float64}(μ)
+    return PSResult{Float64}(option_excercise_reward_table)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
