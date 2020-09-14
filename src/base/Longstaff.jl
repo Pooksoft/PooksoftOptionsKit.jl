@@ -189,8 +189,11 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     # compute the discounted payout -
     discounted_payout_array = option_excercise_reward_table*d
 
+    # setup names tuple -
+    result_tuple = (option_payout_table=option_excercise_reward_table,discount=d)
+
     # return - what is going on?
-    return PSResult(discounted_payout_array)
+    return PSResult(result_tuple)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
