@@ -1,45 +1,20 @@
 # --- PRIVATE METHODS --------------------------------------------------------------------------------------- #
-function _fit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
-
-    # what is the size of X?
-    number_of_paths = length(X)
-        
-    # initialize -
-    M = zeros(number_of_paths,3)
-
-    # compute the M matrix -
-    for path_index = 1:number_of_paths
-        M[path_index,1] = 1.0
-        M[path_index,2] = X[path_index]
-        M[path_index,3] = (X[path_index])^2
-    end
-
-    # compute the LS parameters -
-    a = inv(transpose(M)*M)*transpose(M)*Y
-
-    # Wrap -
-    model = LocalExpectationRegressionModel(a[1],a[2],a[3])
-
-    # return -
-    return PSResult{LocalExpectationRegressionModel}(model)
-end
-
 function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
 
     # setup the model -
-    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2
+    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2+p[4]*x^3
 
     # setup the fit -
-    p0 = [-1.0,3.0,-2.0]
-    lb = [-10.0, -10.0, -10.0]
-    ub = [10.0, 10.0, 10.0]
+    p0 = [-1.0, 3.0, -2.0, 1.0]
+    lb = [-10.0, -10.0, -10.0, -10.0]
+    ub = [10.0, 10.0, 10.0, 10.0]
 
     # run the fit -
     fit_bounds = curve_fit(model, X, Y, p0,lower=lb,upper=ub)
 
     # Wrap -
     a = fit_bounds.param
-    local_model = LocalExpectationRegressionModel(a[1],a[2],a[3])
+    local_model = LocalExpectationRegressionModel(a[1],a[2],a[3],a[4])
 
     # grab the result -
     return PSResult(local_model)
@@ -55,13 +30,15 @@ function _evaluate_local_regression_model(model::LocalExpectationRegressionModel
     a0 = model.a0
     a1 = model.a1
     a2 = model.a2
+    a3 = model.a3
 
     # compute -
     for value in X
         term_1 = a0
         term_2 = a1*value
         term_3 = a2*(value)^2
-        f_value = term_1+term_2+term_3
+        term_4 = a3*(value)^3
+        f_value = term_1+term_2+term_3+term_4
         push!(f_value_array,f_value)
     end
 
