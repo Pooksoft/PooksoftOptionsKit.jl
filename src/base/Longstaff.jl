@@ -199,7 +199,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     #μ = (1/number_of_paths)*sum(final_option_cost_array)
 
     # return - what is going on?
-    return PSResult{Float64}(option_excercise_reward_table)
+    return PSResult(option_excercise_reward_table)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
@@ -240,6 +240,6 @@ function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, unde
     option_price_table = result.value
 
     # return -
-    return PSResult{Float64}(option_price_table)
+    return PSResult(option_price_table)
 end
 # ----------------------------------------------------------------------------------------------------------- #
