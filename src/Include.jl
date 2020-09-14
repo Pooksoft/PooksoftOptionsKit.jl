@@ -6,6 +6,7 @@ using JSON
 using ColorTypes
 using DataFrames
 using Statistics
+using LsqFit
 using Reexport
 @reexport using PooksoftBase
 

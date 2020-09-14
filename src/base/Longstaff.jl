@@ -24,6 +24,28 @@ function _fit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::P
     return PSResult{LocalExpectationRegressionModel}(model)
 end
 
+function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
+
+    # setup the model -
+    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2
+
+    # setup the fit -
+    p0 = [-1.0,3.0,-2.0]
+    lb = [-10.0, -10.0, -10.0]
+    ub = [10.0, 10.0, 10.0]
+
+    # run the fit -
+    fit_bounds = curve_fit(model, X, Y, p0,lower=lb,upper=ub)
+
+    # Wrap -
+    a = fit_bounds.param
+    local_model = LocalExpectationRegressionModel(a[1],a[2],a[3])
+
+    # grab the result -
+    return PSResult(local_model)
+end
+
+
 function _evaluate_local_regression_model(model::LocalExpectationRegressionModel,X::Array{Float64,1})::PSResult
 
     # initialize -
@@ -142,7 +164,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             Ydata = Y[itm_index_array].*d 
 
             # compute the local model -
-            result = _fit_local_regression_model(Xdata,Ydata)
+            result = _lsqfit_local_regression_model(Xdata,Ydata)
             if (isa(result.value,Exception) == true)
                 return result
             end
