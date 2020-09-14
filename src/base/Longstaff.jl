@@ -77,7 +77,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     (number_of_paths,number_of_time_steps) = size(underlying_price_table)
 
     # initialize an empty option_cost_table -
-    option_excercise_reward_table = zeros(number_of_paths,number_of_time_steps)
+    option_excercise_reward_table = zeros(number_of_paths,number_of_time_steps-1)
 
     # initialize an empty profit_loss_table -
     intrinsic_value_table = zeros(number_of_paths,number_of_time_steps)
