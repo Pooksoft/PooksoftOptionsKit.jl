@@ -129,12 +129,14 @@ struct PSPutOptionContract <: PSAbstractAsset
 end
 
 struct LocalExpectationRegressionModel 
+    
     a0::Float64
     a1::Float64
     a2::Float64
     a3::Float64
+    a4::Float64
 
-    function LocalExpectationRegressionModel(a0,a1,a2,a3)
-        this = new(a0,a1,a2,a3)
+    function LocalExpectationRegressionModel(a0,a1,a2,a3,a4)
+        this = new(a0,a1,a2,a3,a4)
     end
 end

@@ -2,19 +2,19 @@
 function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
 
     # setup the model -
-    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2+p[4]*x^3
+    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2+p[4]*x^3+p[5]*x^4
 
     # setup the fit -
-    p0 = [-1.0, 3.0, -2.0, 1.0]
-    lb = [-10.0, -10.0, -10.0, -10.0]
-    ub = [10.0, 10.0, 10.0, 10.0]
+    p0 = [-1.0, 3.0, -2.0, 1.0, 1.0]
+    lb = [-100.0, -100.0, -100.0, -100.0, -100.0]
+    ub = [100.0, 100.0, 100.0, 100.0, 100.0]
 
     # run the fit -
     fit_bounds = curve_fit(model, X, Y, p0,lower=lb,upper=ub)
 
     # Wrap -
     a = fit_bounds.param
-    local_model = LocalExpectationRegressionModel(a[1],a[2],a[3],a[4])
+    local_model = LocalExpectationRegressionModel(a[1],a[2],a[3],a[4],a[5])
 
     # grab the result -
     return PSResult(local_model)
@@ -31,6 +31,7 @@ function _evaluate_local_regression_model(model::LocalExpectationRegressionModel
     a1 = model.a1
     a2 = model.a2
     a3 = model.a3
+    a4 = model.a4
 
     # compute -
     for value in X
@@ -38,7 +39,8 @@ function _evaluate_local_regression_model(model::LocalExpectationRegressionModel
         term_2 = a1*value
         term_3 = a2*(value)^2
         term_4 = a3*(value)^3
-        f_value = term_1+term_2+term_3+term_4
+        term_5 = a4*(value)^4
+        f_value = term_1+term_2+term_3+term_4+term_5
         push!(f_value_array,f_value)
     end
 
