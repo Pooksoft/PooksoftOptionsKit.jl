@@ -227,7 +227,8 @@ function longstaff_option_contract_price(contractSet::Set{PSAbstractAsset}, unde
     earlyExercise::Bool = false, riskFreeRate::Float64 = 0.015, timeMultiplier=1.0)::PSResult
 
     # update the option cost table -
-    result = _calculate_options_cost_table(contractSet, underlyingPriceTable; earlyExercise = earlyExercise)
+    result = _calculate_options_cost_table(contractSet, underlyingPriceTable; 
+        earlyExercise = earlyExercise, riskFreeRate=riskFreeRate,timeMultiplier=timeMultiplier)
     if (isa(result.value,Exception) == true)
         return result
     end
