@@ -199,7 +199,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     μ = mean(final_option_cost_array)
 
     # return - what is going on?
-    return PSResult{Array{Float64,2}}(μ)
+    return PSResult{Float64}(μ)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
