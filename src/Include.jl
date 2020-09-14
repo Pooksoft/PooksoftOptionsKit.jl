@@ -5,6 +5,7 @@ using Optim
 using JSON
 using ColorTypes
 using DataFrames
+using Statistics
 using Reexport
 @reexport using PooksoftBase
 
