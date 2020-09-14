@@ -182,24 +182,15 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     final_option_cost_array = Array{Float64,1}()
     d = ones(number_of_time_steps)
     for time_index = 1:number_of_time_steps
-        ΔT = (time_index-1)*(1/365)
+        ΔT = (time_index)*(1/365)
         d[time_index] = exp(-riskFreeRate*ΔT)
     end
 
-    # process each path -
-    for path_index = 1:number_of_paths
-        idx_nz = findfirst(x->x>0,option_excercise_reward_table[path_index,:])
-        if (idx_nz !== nothing)
-            value = (d[idx_nz])*option_excercise_reward_table[path_index,idx_nz]
-            push!(final_option_cost_array,value)
-        end
-    end
-
-    # compute the price -
-    #μ = (1/number_of_paths)*sum(final_option_cost_array)
+    # compute the discounted payout -
+    discounted_payout_array = option_excercise_reward_table*d
 
     # return - what is going on?
-    return PSResult(option_excercise_reward_table)
+    return PSResult(discounted_payout_array)
 end
 # ----------------------------------------------------------------------------------------------------------- #
 
