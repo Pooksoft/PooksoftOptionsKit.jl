@@ -6,8 +6,8 @@ function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})
 
     # setup the fit -
     p0 = [-1.0, 3.0, -2.0, 1.0, 1.0]
-    lb = [-100.0, -100.0, -100.0, -100.0, -100.0]
-    ub = [100.0, 100.0, 100.0, 100.0, 100.0]
+    lb = [-10.0, -10.0, -10.0, -10.0, -10.0]
+    ub = [10.0, 10.0, 10.0, 10.0, 10.0]
 
     # run the fit -
     fit_bounds = curve_fit(model, X, Y, p0,lower=lb,upper=ub)
