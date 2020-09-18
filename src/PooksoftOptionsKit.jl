@@ -33,6 +33,7 @@ export PSEquityAsset
 
 # Parameters for greek calculation -
 export PSOptionKitPricingParameters
+export PSBinaryLatticeModel
 
 # Binary tree -
 export PSBinaryPriceTreeNode
