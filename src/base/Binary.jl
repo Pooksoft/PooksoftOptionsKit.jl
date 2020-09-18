@@ -1,4 +1,126 @@
 # --- PRIVATE METHODS --------------------------------------------------------------------------------------- #
+function _build_binary_lattice_intrinsic_value_array(contractSet::Set{PSAbstractAsset}, binaryPriceArray::Array{Float64,1})::PSResult
+
+    # initialize -
+    intrinsic_value_array = similar(binaryPriceArray)
+
+    # ok, so lets go through each price, compute the intrinsic value - and then store 
+    for (index,price) in enumerate(binaryPriceArray)
+        
+        # ok, get the underlying price -
+        underlying_price_value = binaryPriceArray[index]
+
+        # compute the intrinsic value -
+        result = intrinsic_value(contractSet,underlying_price_value)
+        if (isa(result.value,Exception) == true)
+            return result
+        end
+        iv_value = result.value
+
+        # add the iv to the array - index should work out
+        intrinsic_value_array[index] = iv_value
+    end
+
+    # return -
+    return PSResult{Array{Float64,1}}(intrinsic_value_array)
+end
+
+function _build_binary_lattice_underlying_price_array(basePrice::Float64, volatility::Float64, timeToExercise::Int)::PSResult
+
+    # compute up and down perturbations -
+    numberOfLevels = timeToExercise + 1     # assumption: our time unit is 1 day *always* = is this legit?
+    Δt = (timeToExercise/numberOfLevels)    
+    U = exp(volatility * √Δt)
+    D = 1 / U
+
+    # compute price array -
+    number_of_elements = (2^numberOfLevels) - 1
+    priceArray = zeros(number_of_elements)
+    priceArray[1] = basePrice
+
+    # populate the prive array -
+    for index = 1:number_of_elements
+
+        # get the basePrice -
+        basePrice = priceArray[index]
+
+        # compute the prices -
+        down_price = basePrice*D
+        up_price = basePrice*U
+    
+        # add the prices to the array -
+        left_index = 2*(index - 1) + 2
+        right_index = 2*(index - 1) + 3
+
+        # note - we need to check that we don't write into the array past the end
+        if (left_index<=number_of_elements)
+            priceArray[left_index] = down_price
+        end
+
+        if (right_index<=number_of_elements)
+            priceArray[right_index] = up_price
+        end
+    end
+
+    # return the price array -
+    return PSResult{Array{Float64,1}}(priceArray)
+end
+
+function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; earlyExcercise::Bool = false)::PSResult
+
+    # get stuff from the lattice model -
+    volatility = latticeModel.volatility
+    timeToExercise = latticeModel.timeToExercise
+    riskFreeRate = latticeModel.riskFreeRate
+    dividendRate = latticeModel.dividendRate
+
+    # compute up and down perturbations -
+    numberOfLevels = timeToExercise + 1     # assumption: our time unit is 1 day *always* = is this legit?
+    Δt = (timeToExercise/numberOfLevels)    
+    U = exp(volatility * √Δt)
+    D = 1 / U
+    p = (exp((riskFreeRate - dividendRate)*Δt) - D)/(U - D)
+    DF = exp(-riskFreeRate*Δt)
+
+    # create a index table -
+    number_of_elements = (2^(numberOfLevels-1)) - 1
+    index_table = zeros(number_of_elements,4)
+    backwards_index_array = range(number_of_elements,step=-1,stop=1) |> collect
+    for (forward_index, backward_index) in enumerate(backwards_index_array)
+        
+        # add the prices to the array -
+        left_index = 2*(backward_index - 1) + 2
+        right_index = 2*(backward_index - 1) + 3
+    
+        # populate the index table -
+        index_table[forward_index,1] = backward_index
+        index_table[forward_index,2] = left_index
+        index_table[forward_index,3] = right_index
+    end
+
+    # ok, so now lets compute the value for the nodes -
+    for compute_index = 1:number_of_elements
+        
+        # get the indexs -
+        parent_node_index = index_table[compute_index,1]
+        child_left_index = index_table[compute_index,2]
+        child_right_index = index_table[compute_index,3]
+
+        # compute the value -
+        contract_value = 0.0
+        contract_value = DF*(p*intrinsicValueArray[child_left_index]+(1-p)*intrinsicValueArray[child_right_index])
+        if (earlyExcercise == false)
+            index_table[compute_index,4] = contract_value
+        else
+            iv_value = intrinsicValueArray[parent_node_index]
+            index_table[compute_index,4] = max(iv_value,contract_value)
+        end
+    end
+
+    # return -
+    return PSResult(index_table)
+end
+
 function _build_binary_price_tree(basePrice::Float64, volatility::Float64, timeToExercise::Float64, 
     numberOfLevels::Int)::PSBinaryPriceTree
 
@@ -206,5 +328,40 @@ function option_contract_price(tree::PSBinaryPriceTree, parameters::PSOptionKitP
     
     # return -
     return PSResult{Float64}(optionContractPrice)
+end
+
+function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
+    earlyExercise::Bool = false)::PSResult
+
+    # initialize -
+    option_contract_price = 0.0
+
+    # we need to get some stuff from the lattice model -
+    volatility = latticeModel.volatility
+    timeToExercise = latticeModel.timeToExercise
+
+    # compute the price array -
+    result = _build_binary_lattice_underlying_price_array(baseUnderlyingPrice, volatility, timeToExercise)
+    if (isa(result.value,Exception) == true)
+        return result
+    end
+    lattice_price_array = result.value
+
+    # compute the intrinsic value array -
+    result = _build_binary_lattice_intrinsic_value_array(contractSet,lattice_price_array)
+    if (isa(result.value,Exception) == true)
+        return result
+    end
+    iv_array = result.value
+
+    # ok, let's build the option value array -
+    result = _build_binary_lattice_option_value_array(intrinsicValueArray, latticeModel; earlyExcercise = earlyExercise)
+    if (isa(result.value,Exception) == true)
+        return result
+    end
+    binomial_value_array = result.value
+
+    # return -
+    return PSResult(binomial_value_array)
 end
 # ----------------------------------------------------------------------------------------------------------- #

@@ -101,3 +101,29 @@ function intrinsic_value(equityObject::PSEquityAsset, currentPriceValue::Float64
     # return -
     return PSResult(named_tuple)
 end
+
+function intrinsic_value(contractSet::Set{PSAbstractAsset},underlyingPriceValue::Float64)::PSResult
+
+    # initialize -
+    tmp_iv_array = Float64[]
+
+    # go through each contract, compute the iv, store -
+    for (index,contract) in enumerate(contractSet)
+
+        # compute -
+        result = intrinsic_value(contract,underlyingPriceValue)
+        if (isa(result.value,Exeption) == true)
+            return result
+        end
+        iv_value = result.value.intrinsic_value
+
+        # store -
+        push!(tmp_iv_array,iv_value)
+    end
+
+    # sum -
+    total_iv_value = sum(tmp_iv_array)
+
+    # return -
+    return PSResult{Float64}(total_iv_value)
+end

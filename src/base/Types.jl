@@ -139,3 +139,17 @@ struct LocalExpectationRegressionModel
         this = new(a0,a1,a2,a3)
     end
 end
+
+struct PSBinaryLatticeModel
+
+    # data -
+    volatility::Float64
+    timeToExercise::Int64
+    riskFreeRate::Float64
+    dividendRate::Float64
+
+    function PSBinaryLatticeModel(volatility,timeToExercise,riskFreeRate,dividendRate)
+        this = new(volatility,timeToExercise,riskFreeRate,dividendRate)
+    end
+
+end
