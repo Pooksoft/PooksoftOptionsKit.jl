@@ -112,7 +112,7 @@ function intrinsic_value(contractSet::Set{PSAbstractAsset},underlyingPriceValue:
 
         # compute -
         result = intrinsic_value(contract,underlyingPriceValue)
-        if (isa(result.value,Exeption) == true)
+        if (isa(result.value, Exception) == true)
             return result
         end
         iv_value = result.value.intrinsic_value
