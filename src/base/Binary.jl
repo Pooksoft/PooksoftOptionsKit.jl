@@ -361,7 +361,10 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     end
     binomial_value_array = result.value
 
+    # create a named tuple and return the results -
+    results_tuple = (lattice_price_array=lattice_price_array, intrinsic_value_array = iv_array, binomial_value_array=binomial_value_array)
+
     # return -
-    return PSResult(binomial_value_array)
+    return PSResult(results_tuple)
 end
 # ----------------------------------------------------------------------------------------------------------- #
