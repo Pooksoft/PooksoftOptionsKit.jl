@@ -102,9 +102,9 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     for compute_index = 1:number_of_elements
         
         # get the indexs -
-        parent_node_index = index_table[compute_index,1]
-        child_left_index = index_table[compute_index,2]
-        child_right_index = index_table[compute_index,3]
+        parent_node_index = Int(index_table[compute_index,1])
+        child_left_index = Int(index_table[compute_index,2])
+        child_right_index = Int(index_table[compute_index,3])
 
         # compute the value -
         contract_value = 0.0
