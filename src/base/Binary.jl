@@ -355,7 +355,7 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     iv_array = result.value
 
     # ok, let's build the option value array -
-    result = _build_binary_lattice_option_value_array(intrinsicValueArray, latticeModel; earlyExcercise = earlyExercise)
+    result = _build_binary_lattice_option_value_array(iv_array, latticeModel; earlyExcercise = earlyExercise)
     if (isa(result.value,Exception) == true)
         return result
     end
