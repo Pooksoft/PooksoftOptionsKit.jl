@@ -121,9 +121,6 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         end
     end
 
-    # calculate the price -
-    C = DF*(p*index_table[end-1,end]+(1-p)*index_table[end-2,end])
-
     # setup the results tuple -
     results_tuple = (option_index_table=index_table, option_contract_price_array=contract_price_array, U=U, D=D, PUP=p, PDOWN=(1-p), DF=DF)
 
