@@ -123,8 +123,11 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
             end
         
         else
+        
             # compute the value -
-            contract_value = DF*(p*index_table[child_left_index,4]+(1-p)*index_table[child_right_index,4])  
+            contract_value = DF*(p*index_table[child_left_index,4]+(1-p)*index_table[child_right_index,4]) 
+            
+            @show (parent_node_index,child_left_index,child_right_index,contract_value)
             if (earlyExcercise == false)
                 index_table[parent_node_index,4] = contract_value
             else
