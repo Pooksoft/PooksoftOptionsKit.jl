@@ -1,5 +1,6 @@
 # abstract types -
 abstract type PSAbstractVisualizationTheme end
+abstract type PSAbstractLatticeModel end
 
 # concrete types -
 mutable struct PSBinaryPriceTreeNode <: PSAbstractAssetTreeNode
@@ -140,7 +141,7 @@ struct LocalExpectationRegressionModel
     end
 end
 
-struct PSBinaryLatticeModel
+struct PSBinaryLatticeModel <: PSAbstractLatticeModel
 
     # data -
     volatility::Float64
@@ -152,4 +153,17 @@ struct PSBinaryLatticeModel
         this = new(volatility,timeToExercise,riskFreeRate,dividendRate)
     end
 
+end
+
+struct PSTernaryLatticeModel <: PSAbstractLatticeModel
+
+    # data -
+    volatility::Float64
+    timeToExercise::Int64
+    riskFreeRate::Float64
+    dividendRate::Float64
+
+    function PSTernaryLatticeModel(volatility,timeToExercise,riskFreeRate,dividendRate)
+        this = new(volatility,timeToExercise,riskFreeRate,dividendRate)
+    end
 end

@@ -136,6 +136,106 @@ function build_simulation_lattice_data_structure(pathToSimulationFile::String)::
     return PSResult(option_parameters)
 end
 
+function build_binary_lattice_data_structure(pathToSimulationFile::String)::PSResult
+
+    # TODO: check - is this a legit path -
+
+    # load the experimet file -
+    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+
+    # check - do we have the correct keys -
+    main_key = "binary_lattice_model_parameters"
+    if (haskey(simulation_dictionary,main_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(main_key) key"))
+    end
+    lattice_parameters = simulation_dictionary[main_key]
+
+    # check the other keys -
+    # volatility -
+    volatility_key = "volatility"
+    if (haskey(lattice_parameters,volatility_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(volatility_key) key"))
+    end
+    volatility = lattice_parameters[volatility_key]
+
+    # risk free rate -
+    risk_free_rate_key = "risk_free_rate"
+    if (haskey(lattice_parameters,risk_free_rate_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(risk_free_rate_key) key"))
+    end
+    risk_free_rate = lattice_parameters[risk_free_rate_key]
+
+    # dividend_rate -
+    dividend_rate_key = "dividend_rate"
+    if (haskey(lattice_parameters, dividend_rate_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(dividend_rate_key) key"))
+    end
+    dividend_rate = lattice_parameters[dividend_rate_key]
+
+    # days_to_expiration -
+    expiration_key = "days_to_expiration"
+    if (haskey(lattice_parameters, expiration_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(expiration_key) key"))
+    end
+    days_to_expiration = lattice_parameters[expiration_key]
+    
+    # build lattice object -
+    option_parameters = PSBinaryLatticeModel(volatility, days_to_expiration, risk_free_rate, dividend_rate)
+
+    # return -
+    return PSResult(option_parameters)
+end
+
+function build_ternary_lattice_data_structure(pathToSimulationFile::String)::PSResult
+
+    # TODO: check - is this a legit path -
+
+    # load the experimet file -
+    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+
+    # check - do we have the correct keys -
+    main_key = "ternary_lattice_model_parameters"
+    if (haskey(simulation_dictionary,main_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(main_key) key"))
+    end
+    lattice_parameters = simulation_dictionary[main_key]
+
+    # check the other keys -
+    # volatility -
+    volatility_key = "volatility"
+    if (haskey(lattice_parameters,volatility_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(volatility_key) key"))
+    end
+    volatility = lattice_parameters[volatility_key]
+
+    # risk free rate -
+    risk_free_rate_key = "risk_free_rate"
+    if (haskey(lattice_parameters,risk_free_rate_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(risk_free_rate_key) key"))
+    end
+    risk_free_rate = lattice_parameters[risk_free_rate_key]
+
+    # dividend_rate -
+    dividend_rate_key = "dividend_rate"
+    if (haskey(lattice_parameters, dividend_rate_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(dividend_rate_key) key"))
+    end
+    dividend_rate = lattice_parameters[dividend_rate_key]
+
+    # days_to_expiration -
+    expiration_key = "days_to_expiration"
+    if (haskey(lattice_parameters, expiration_key) == false)
+        return PSError(ArgumentError("binary lattice specification is missing the $(expiration_key) key"))
+    end
+    days_to_expiration = lattice_parameters[expiration_key]
+    
+    # build lattice object -
+    option_parameters = PSTernaryLatticeModel(volatility, days_to_expiration, risk_free_rate, dividend_rate)
+
+    # return -
+    return PSResult(option_parameters)
+end
+
 function build_simulation_price_array(pathToSimulationFile::String)::PSResult
 
     # TODO: check - is this a legit path -

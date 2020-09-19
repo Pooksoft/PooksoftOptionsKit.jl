@@ -6,6 +6,8 @@ include("Include.jl")
 # export methods -
 export compute_option_profit_and_loss_at_expiration
 export build_simulation_lattice_data_structure
+export build_binary_lattice_data_structure
+export build_ternary_lattice_data_structure
 export build_simulation_contract_set
 export build_simulation_price_array
 
@@ -34,6 +36,7 @@ export PSEquityAsset
 # Parameters for greek calculation -
 export PSOptionKitPricingParameters
 export PSBinaryLatticeModel
+export PSTernaryLatticeModel
 
 # Binary tree -
 export PSBinaryPriceTreeNode
