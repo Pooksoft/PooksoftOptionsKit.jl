@@ -98,25 +98,30 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         index_table[forward_index,2] = left_index
         index_table[forward_index,3] = right_index
         
+        # add the intrinsic value to the last col -
+        index_table[backward_index,4] = intrinsicValueArray[backward_index]
     end
 
     # ok, so now lets compute the value for the nodes -
-    for compute_index = 1:number_of_elements
+    # for compute_index = 1:number_of_elements
         
-        # get the indexs -
-        parent_node_index = Int(index_table[compute_index,1])
-        child_left_index = Int(index_table[compute_index,2])
-        child_right_index = Int(index_table[compute_index,3])
+    #     # get the indexs -
+    #     parent_node_index = Int(index_table[compute_index,1])
+    #     child_left_index = Int(index_table[compute_index,2])
+    #     child_right_index = Int(index_table[compute_index,3])
 
-        # compute the value -
-        contract_value = DF*(p*intrinsicValueArray[child_left_index]+(1-p)*intrinsicValueArray[child_right_index])
-        if (earlyExcercise == false)
-            index_table[compute_index,4] = contract_value
-        else
-            iv_value = intrinsicValueArray[parent_node_index]
-            index_table[compute_index,4] = max(iv_value,contract_value)
-        end
-    end
+    #     # ok, so we need to check - are we look at the last set of parents?
+
+
+    #     # compute the value -
+    #     contract_value = DF*(p*index_table[child_left_index,4]+(1-p)*index_table[child_right_index,4])
+    #     if (earlyExcercise == false)
+    #         index_table[compute_index,4] = contract_value
+    #     else
+    #         iv_value = intrinsicValueArray[parent_node_index]
+    #         index_table[compute_index,4] = max(iv_value,contract_value)
+    #     end
+    # end
 
     # calculate the price -
     C = DF*(p*index_table[end-1,end]+(1-p)*index_table[end-2,end])
