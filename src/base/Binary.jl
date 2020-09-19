@@ -97,9 +97,6 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         index_table[forward_index,1] = backward_index
         index_table[forward_index,2] = left_index
         index_table[forward_index,3] = right_index
-        
-        # add the intrinsic value to the last col -
-        index_table[backward_index,4] = intrinsicValueArray[backward_index]
     end
 
     # ok, so now lets compute the value for the nodes -
@@ -126,7 +123,6 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         
             # compute the value -
             contract_value = DF*(p*index_table[child_left_index,4]+(1-p)*index_table[child_right_index,4]) 
-            
             @show (parent_node_index,child_left_index,child_right_index,contract_value)
             if (earlyExcercise == false)
                 index_table[parent_node_index,4] = contract_value
