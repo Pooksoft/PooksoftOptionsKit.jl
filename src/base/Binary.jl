@@ -35,7 +35,7 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
     D = 1 / U
 
     # compute price array -
-    number_of_elements = (2^numberOfLevels) - 1
+    number_of_elements = (2^(Int(numberOfLevels))) - 1
     priceArray = zeros(number_of_elements)
     priceArray[1] = basePrice
 
@@ -84,7 +84,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     DF = exp(-riskFreeRate*Δt)
 
     # create a index table -
-    number_of_elements = (2^(numberOfLevels-1)) - 1
+    number_of_elements = (2^(Int(numberOfLevels)-1)) - 1
     index_table = zeros(number_of_elements,4)
     backwards_index_array = range(number_of_elements,step=-1,stop=1) |> collect
     for (forward_index, backward_index) in enumerate(backwards_index_array)
