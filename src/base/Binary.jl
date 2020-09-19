@@ -69,6 +69,9 @@ end
 
 function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; earlyExcercise::Bool = false)::PSResult
 
+    # initialize -
+    contract_price_array = copy(intrinsicValueArray)
+    
     # get stuff from the lattice model -
     volatility = latticeModel.volatility
     timeToExercise = latticeModel.timeToExercise
@@ -85,7 +88,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
 
     # create a index table -
     number_of_elements = (2^(Int(numberOfLevels)-1)) - 1
-    index_table = zeros(number_of_elements,4)
+    index_table = zeros(number_of_elements,3)
     backwards_index_array = range(number_of_elements,step=-1,stop=1) |> collect
     for (forward_index, backward_index) in enumerate(backwards_index_array)
         
@@ -99,6 +102,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         index_table[forward_index,3] = right_index
     end
 
+
     # ok, so now lets compute the value for the nodes -
     for compute_index = 1:number_of_elements
         
@@ -107,30 +111,13 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         child_left_index = Int(index_table[compute_index,2])
         child_right_index = Int(index_table[compute_index,3])
 
-        # ok, so we need to check - are we look at the last set of parents?
-        if (child_left_index>number_of_elements && child_right_index>number_of_elements)
-            
-            # if we are here, then we need to work with the leaf nodes -
-            contract_value = DF*(p*intrinsicValueArray[child_left_index]+(1-p)*intrinsicValueArray[child_right_index])
-            @show (parent_node_index,child_left_index,child_right_index,contract_value,intrinsicValueArray[child_left_index],intrinsicValueArray[child_right_index])
-            if (earlyExcercise == false)
-                index_table[parent_node_index,4] = contract_value
-            else
-                iv_value = intrinsicValueArray[parent_node_index]
-                index_table[parent_node_index,4] = max(iv_value,contract_value)
-            end
-        
+        # compute -
+        contract_price = DF*(p*contract_price_array[child_left_index]+(1-p)*contract_price_array[child_right_index])
+        if (earlyExcercise == false)
+            contract_price_array[parent_node_index] = contract_price
         else
-        
-            # compute the value -
-            contract_value = DF*(p*index_table[child_left_index,4]+(1-p)*index_table[child_right_index,4]) 
-            @show (parent_node_index,child_left_index,child_right_index,contract_value,index_table[child_left_index,4],index_table[child_right_index,4])
-            if (earlyExcercise == false)
-                index_table[parent_node_index,4] = contract_value
-            else
-                iv_value = intrinsicValueArray[parent_node_index]
-                index_table[parent_node_index,4] = max(iv_value,contract_value)
-            end
+            excercise_value = contract_price_array[parent_node_index]
+            contract_price_array[parent_node_index] = max(excercise_value,contract_price)
         end
     end
 
@@ -138,7 +125,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     C = DF*(p*index_table[end-1,end]+(1-p)*index_table[end-2,end])
 
     # setup the results tuple -
-    results_tuple = (option_value_table=index_table, option_contract_price=C, U=U, D=D, PUP=p, PDOWN=(1-p), DF=DF)
+    results_tuple = (option_index_table=index_table, option_contract_price_array=contract_price_array, U=U, D=D, PUP=p, PDOWN=(1-p), DF=DF)
 
     # return -
     return PSResult(results_tuple)
