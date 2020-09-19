@@ -26,10 +26,11 @@ function _build_binary_lattice_intrinsic_value_array(contractSet::Set{PSAbstract
     return PSResult{Array{Float64,1}}(intrinsic_value_array)
 end
 
-function _build_binary_lattice_underlying_price_array(basePrice::Float64, volatility::Float64, timeToExercise::Int; numberOfLevels::Int64 = 14)::PSResult
+function _build_binary_lattice_underlying_price_array(basePrice::Float64, volatility::Float64, timeToExercise::Int)::PSResult
 
     # compute up and down perturbations -
-    Δt = (timeToExercise/numberOfLevels)    
+    numberOfLevels = timeToExercise + 1
+    Δt = (1.0)    
     U = exp(volatility * √Δt)
     D = 1 / U
 
@@ -66,7 +67,7 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
     return PSResult{Array{Float64,1}}(priceArray)
 end
 
-function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; earlyExcercise::Bool = false, numberOfLevels::Int64 = 14)::PSResult
+function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; earlyExcercise::Bool = false)::PSResult
 
     # get stuff from the lattice model -
     volatility = latticeModel.volatility
@@ -75,7 +76,8 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     dividendRate = latticeModel.dividendRate
 
     # compute up and down perturbations -
-    Δt = (timeToExercise/numberOfLevels)   
+    numberOfLevels = timeToExercise + 1
+    Δt = (1.0)   
     U = exp(volatility * √Δt)
     D = 1 / U
     p = (exp((riskFreeRate - dividendRate)*Δt) - D)/(U - D)
@@ -129,7 +131,7 @@ end
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
 function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
-    earlyExercise::Bool = false, numberOfLevels::Int64 = 14)::PSResult
+    earlyExercise::Bool = false)::PSResult
 
     # initialize -
     option_contract_price = 0.0
@@ -139,7 +141,7 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     timeToExercise = latticeModel.timeToExercise
 
     # compute the price array -
-    result = _build_binary_lattice_underlying_price_array(baseUnderlyingPrice, volatility, timeToExercise; numberOfLevels=numberOfLevels)
+    result = _build_binary_lattice_underlying_price_array(baseUnderlyingPrice, volatility, timeToExercise)
     if (isa(result.value,Exception) == true)
         return result
     end
@@ -153,7 +155,7 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     iv_array = result.value
 
     # ok, let's build the option value array -
-    result = _build_binary_lattice_option_value_array(iv_array, latticeModel; earlyExcercise = earlyExercise, numberOfLevels=numberOfLevels)
+    result = _build_binary_lattice_option_value_array(iv_array, latticeModel; earlyExcercise = earlyExercise)
     if (isa(result.value,Exception) == true)
         return result
     end
