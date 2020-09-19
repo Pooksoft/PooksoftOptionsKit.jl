@@ -97,6 +97,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         index_table[forward_index,1] = backward_index
         index_table[forward_index,2] = left_index
         index_table[forward_index,3] = right_index
+        
     end
 
     # ok, so now lets compute the value for the nodes -
