@@ -54,11 +54,11 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
 
         # note - we need to check that we don't write into the array past the end
         if (left_index<=number_of_elements)
-            priceArray[left_index] = down_price
+            priceArray[left_index] = up_price
         end
 
         if (right_index<=number_of_elements)
-            priceArray[right_index] = up_price
+            priceArray[right_index] = down_price
         end
     end
 
