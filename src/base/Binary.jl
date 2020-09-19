@@ -76,7 +76,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
 
     # compute up and down perturbations -
     numberOfLevels = timeToExercise + 1     # assumption: our time unit is 1 day *always* = is this legit?
-    Δt = (timeToExercise/numberOfLevels)    
+    Δt = (1.0)   
     U = exp(volatility * √Δt)
     D = 1 / U
     p = (exp((riskFreeRate - dividendRate)*Δt) - D)/(U - D)
@@ -107,7 +107,6 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
         child_right_index = Int(index_table[compute_index,3])
 
         # compute the value -
-        contract_value = 0.0
         contract_value = DF*(p*intrinsicValueArray[child_left_index]+(1-p)*intrinsicValueArray[child_right_index])
         if (earlyExcercise == false)
             index_table[compute_index,4] = contract_value
