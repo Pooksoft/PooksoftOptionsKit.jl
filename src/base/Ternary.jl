@@ -118,7 +118,7 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
         index_table[forward_index,4] = right_index
     end
 
-    @show index_table
+    # @show index_table
 
     # ok, so now lets compute the value for the nodes -
     for compute_index = 1:number_of_elements
@@ -129,7 +129,7 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
         child_center_index = Int(index_table[compute_index,3])
         child_right_index = Int(index_table[compute_index,4])
 
-        @show (parent_node_index,child_left_index,child_center_index,child_right_index)
+        #@show (parent_node_index,child_left_index,child_center_index,child_right_index)
 
         # compute -
         contract_price = DF*(pup*contract_price_array[child_left_index]+(pdown)*contract_price_array[child_right_index]+(1-pup-pdown)*contract_price_array[child_center_index])
