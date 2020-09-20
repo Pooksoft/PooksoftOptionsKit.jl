@@ -12,8 +12,6 @@ export build_simulation_contract_set
 export build_simulation_price_array
 
 # methods for pricing options (uses binary tree)
-export build_binary_price_tree
-export build_ternary_price_tree
 export option_contract_price
 export longstaff_option_contract_price
 
@@ -37,15 +35,5 @@ export PSEquityAsset
 export PSOptionKitPricingParameters
 export PSBinaryLatticeModel
 export PSTernaryLatticeModel
-
-# Binary tree -
-export PSBinaryPriceTreeNode
-export PSBinaryPriceTree
-
-# Ternary tree -
-export PSTernaryPriceTreeNode
-export PSTernaryPriceTree
-
-export path_to_package
 
 end # module
