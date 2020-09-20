@@ -95,7 +95,7 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
     pup = ((T1 - T2)/(T3 - T2))^2
     pdown = ((T3 - T1)/(T3 - T2))^2
     DF = exp(-riskFreeRate*Δt)
-    U = exp(volatility * sqrt(2*Δt))
+    U = exp(σ*sqrt(2*Δt))
     D = 1.0 / U
     C = 1.0
 
