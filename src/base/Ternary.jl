@@ -75,7 +75,7 @@ function _build_ternary_lattice_underlying_price_array(basePrice::Float64, volat
     return PSResult{Array{Float64,1}}(priceArray)
 end
 
-function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; earlyExcercise::Bool = false)::PSResult
+function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSTernaryLatticeModel; earlyExcercise::Bool = false)::PSResult
 
     # initialize -
     contract_price_array = copy(intrinsicValueArray)
