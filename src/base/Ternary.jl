@@ -100,9 +100,10 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
     C = 1.0
 
     # create a index table -
-    number_of_elements = Int64(((3^numberOfLevels) - 1)/2)
-    index_table = zeros(number_of_elements,5)
-    backwards_index_array = range(number_of_elements,step=-1,stop=1) |> collect
+    # number_of_elements = Int64(((3^numberOfLevels) - 1)/2)
+    number_of_elements = numberOfLevels
+    index_table = zeros(numberOfLevels, 5)
+    backwards_index_array = range(numberOfLevels, step=-1,stop=1) |> collect
     for (forward_index, backward_index) in enumerate(backwards_index_array)
         
         # add the prices to the array -
