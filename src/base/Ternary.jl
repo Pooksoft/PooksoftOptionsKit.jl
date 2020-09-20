@@ -142,7 +142,7 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
     end
 
    # setup the results tuple -
-   results_tuple = (option_index_table=index_table, option_contract_price_array=contract_price_array, U=U, D=D, PUP=p, PDOWN=(1-p), DF=DF)
+   results_tuple = (option_index_table=index_table, option_contract_price_array=contract_price_array, U=U, D=D, PUP=pup, PDOWN=pdown, PCENTER=(1-pup-pdown), DF=DF)
 
    # return -
    return PSResult(results_tuple)
