@@ -1,16 +1,16 @@
 # --- PRIVATE METHODS --------------------------------------------------------------------------------------- #
 
 # array based -
-function _build_ternary_lattice_intrinsic_value_array(contractSet::Set{PSAbstractAsset}, binaryPriceArray::Array{Float64,1})::PSResult
+function _build_ternary_lattice_intrinsic_value_array(contractSet::Set{PSAbstractAsset}, ternaryPriceArray::Array{Float64,1})::PSResult
 
     # initialize -
-    intrinsic_value_array = similar(binaryPriceArray)
+    intrinsic_value_array = similar(ternaryPriceArray)
 
     # ok, so lets go through each price, compute the intrinsic value - and then store 
-    for (index,price) in enumerate(binaryPriceArray)
+    for (index,price) in enumerate(ternaryPriceArray)
         
         # ok, get the underlying price -
-        underlying_price_value = binaryPriceArray[index]
+        underlying_price_value = ternaryPriceArray[index]
 
         # compute the intrinsic value -
         result = intrinsic_value(contractSet,underlying_price_value)
@@ -116,6 +116,8 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
         index_table[forward_index,3] = center_index
         index_table[forward_index,4] = right_index
     end
+
+    @show index_table
 
     # ok, so now lets compute the value for the nodes -
     for compute_index = 1:number_of_elements
