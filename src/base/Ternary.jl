@@ -77,6 +77,9 @@ end
 
 function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; earlyExcercise::Bool = false)::PSResult
 
+    # initialize -
+    contract_price_array = copy(intrinsicValueArray)
+    
     # get stuff from the lattice model -
     σ = latticeModel.volatility
     timeToExercise = latticeModel.timeToExercise
@@ -92,7 +95,6 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
     pup = ((T1 - T2)/(T3 - T2))^2
     pdown = ((T3 - T1)/(T3 - T2))^2
     DF = exp(-riskFreeRate*Δt)
-
     U = exp(volatility * sqrt(2*Δt))
     D = 1.0 / U
     C = 1.0
@@ -124,28 +126,21 @@ function _build_ternary_lattice_option_value_array(intrinsicValueArray::Array{Fl
         child_center_index = Int(index_table[compute_index,3])
         child_right_index = Int(index_table[compute_index,4])
 
-        # compute the value -
-        contract_value = DF*((pup)*intrinsicValueArray[child_left_index]+(pdown)*intrinsicValueArray[child_right_index]+(1-pup-pdown)*intrinsicValueArray[child_center_index])
+        # compute -
+        contract_price = DF*(pup*contract_price_array[child_left_index]+(pdown)*contract_price_array[child_right_index]+(1-pup-pdown)*contract_price_array[child_center_index])
         if (earlyExcercise == false)
-            index_table[compute_index,5] = contract_value
+            contract_price_array[parent_node_index] = contract_price
         else
-            iv_value = intrinsicValueArray[parent_node_index]
-            index_table[compute_index,5] = max(iv_value,contract_value)
+            excercise_value = contract_price_array[parent_node_index]
+            contract_price_array[parent_node_index] = max(excercise_value,contract_price)
         end
     end
 
-    # calculate the price -
-    price = DF*(p*index_table[end-2,end]+(1-p)*index_table[end-3,end])
+   # setup the results tuple -
+   results_tuple = (option_index_table=index_table, option_contract_price_array=contract_price_array, U=U, D=D, PUP=p, PDOWN=(1-p), DF=DF)
 
-    # setup the results tuple -
-    results_tuple = (option_value_table=index_table, option_contract_price=price, PUP=pup, PDOWN=pdown, DF=DF, U=U, D=D, C=C)
-
-    # return -
-    return PSResult(results_tuple)
-
-
-    # return -
-    return PSResult(index_table)
+   # return -
+   return PSResult(results_tuple)
 end
 
 # node based -
@@ -407,10 +402,10 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     if (isa(result.value,Exception) == true)
         return result
     end
-    ternary_value_array = result.value
-
+    cost_calc_tuple = result.value
+    
     # create a named tuple and return the results -
-    results_tuple = (lattice_price_array=lattice_price_array, intrinsic_value_array = iv_array, ternary_value_array=ternary_value_array)
+    results_tuple = (lattice_price_array=lattice_price_array, intrinsic_value_array = iv_array, cost_calculation_result=cost_calc_tuple)
 
     # return -
     return PSResult(results_tuple)
