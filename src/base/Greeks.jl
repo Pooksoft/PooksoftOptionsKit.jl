@@ -40,7 +40,7 @@ function delta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel,
 
 end
 
-function theta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+function theta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
     
     # TODO: checks ...
@@ -76,7 +76,7 @@ function theta(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
     return PSResult(theta)
 end
 
-function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 
     # TODO: checks -
@@ -99,7 +99,7 @@ function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPar
     return PSResult(gamma)
 end
 
-function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
+function vega(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
@@ -136,8 +136,8 @@ function vega(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingPara
     return PSResult(vega)
 end
 
-function rho(assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, underlyingAssetPrice::Float64; 
-    modelTreeType::Symbol = :binary, earlyExercise::Bool = false)::PSResult
+function rho(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
+    earlyExercise::Bool = false)::PSResult
 
     # TODO: checks ...
     # check - asset price > 0
