@@ -87,10 +87,18 @@ function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel,
     end
 
     # compute a base delta -
-    base_delta = delta(assetSet,parameters, underlyingAssetPrice; earlyExercise=earlyExercise)
+    result = delta(assetSet,parameters, underlyingAssetPrice; earlyExercise=earlyExercise)
+    if (isa(result.value,Exception) == true)
+        return result
+    end
+    base_delta = result.value;
 
     # compute an updated delta -
-    perturbed_delta = delta(assetSet, parameters, (underlyingAssetPrice + 1.0); earlyExercise=earlyExercise)
+    result = delta(assetSet, parameters, (underlyingAssetPrice + 1.0); earlyExercise=earlyExercise)
+    if (isa(result.value,Exception) == true)
+        return result
+    end
+    perturbed_delta = result.value;
 
     # diff -
     gamma = (perturbed_delta - base_delta)
