@@ -141,7 +141,7 @@ struct LocalExpectationRegressionModel
     end
 end
 
-struct PSBinaryLatticeModel <: PSAbstractLatticeModel
+mutable struct PSBinaryLatticeModel <: PSAbstractLatticeModel
 
     # data -
     volatility::Float64
@@ -155,7 +155,7 @@ struct PSBinaryLatticeModel <: PSAbstractLatticeModel
 
 end
 
-struct PSTernaryLatticeModel <: PSAbstractLatticeModel
+mutable struct PSTernaryLatticeModel <: PSAbstractLatticeModel
 
     # data -
     volatility::Float64
