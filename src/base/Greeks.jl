@@ -25,7 +25,7 @@ function delta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel,
     base_option_price = first(results_tuple.cost_calculation_result.option_contract_price_array);
 
     # perturbed - what is the price if the underlying increases by $1 -
-    result = option_contract_price(assetSet,parameters,(underlyingAssetPrice + 1.0); earlyExercise=earlyExercise)
+    result = option_contract_price(assetSet,parameters, (underlyingAssetPrice + 1.0); earlyExercise=earlyExercise)
     if (isa(result.value,Exception) == true)
         return result
     end
