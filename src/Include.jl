@@ -1,9 +1,7 @@
 # packages -
-using PyPlot
 using Dates
 using Optim
 using JSON
-using ColorTypes
 using DataFrames
 using Statistics
 using LsqFit
