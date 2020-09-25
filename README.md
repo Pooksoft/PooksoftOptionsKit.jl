@@ -1,7 +1,7 @@
 ![CI](https://github.com/Pooksoft/PooksoftOptionsKit.jl/workflows/CI/badge.svg)
 
 ## Introduction
-``PooksoftOptionsKit.jl`` is a [Julia](https://www.julialang.org) package which computes the time value, profit/loss and probability of success for an arbitrary collection of [American or European options contracts](https://en.wikipedia.org/wiki/Option_style#American_and_European_options).
+``PooksoftOptionsKit.jl`` is a package which computes the time value, profit/loss and probability of success for an arbitrary collection of [American or European options contracts](https://en.wikipedia.org/wiki/Option_style#American_and_European_options) using the [Julia programming language](https://www.julialang.org).
 ``PooksoftOptionsKit.jl`` is a member of the [Project Serenity](http://www.pooksoft.com) collection of packages from [Pooksoft](http://www.pooksoft.com), along with [PooksoftAssetModelingKit.jl](https://github.com/Pooksoft/PooksoftAssetModelingKit.jl) and 
 [PooksoftAlphaVantageDataStore.jl](https://github.com/Pooksoft/PooksoftAlphaVantageDataStore.jl) packages. 
 
