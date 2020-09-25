@@ -20,7 +20,7 @@ Once in package mode prompt enter the commands:
     (v1.5) pkg> activate .
     (v1.5) pkg> add https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
 
-This will [activate](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.activate) the current project, 
+This will [activate](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.activate) ``my_project``, 
 and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_project``. 
 To install other required packages, simply add them using the ``add`` command.
     
