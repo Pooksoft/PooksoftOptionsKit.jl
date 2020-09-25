@@ -25,11 +25,12 @@ and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_proje
 To install other required packages, simply add them using the ``add`` command.
     
 
-``CFMG.jl`` is open source, available under a [MIT software license](https://github.com/varnerlab/JuCFMG/blob/master/LICENSE).
+``PooksoftOptionsKit.jl`` is an open source project, 
+available under a [MIT software license](https://github.com/Pooksoft/PooksoftOptionsKit.jl/blob/master/LICENSE).
 You can download this repository as a zip file, clone or pull it by using the command (from the command-line):
 
-	$ git pull https://github.com/varnerlab/CFMG.git
+	$ git pull https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
 
 or
 
-	$ git clone https://github.com/varnerlab/CFMG.git
+	$ git clone https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
