@@ -1,11 +1,11 @@
 ![CI](https://github.com/Pooksoft/PooksoftOptionsKit.jl/workflows/CI/badge.svg)
 
-### Introduction
+## Introduction
 ``PooksoftOptionsKit.jl`` is a [Julia](https://www.julialang.org) package which computes the time value, profit/loss and probability of success for an arbitrary collection of [American or European options contracts](https://en.wikipedia.org/wiki/Option_style#American_and_European_options).
 ``PooksoftOptionsKit.jl`` is a member of the [Project Serenity](http://www.pooksoft.com) collection of packages from [Pooksoft](http://www.pooksoft.com), along with [PooksoftAssetModelingKit.jl](https://github.com/Pooksoft/PooksoftAssetModelingKit.jl) and 
 [PooksoftAlphaVantageDataStore.jl](https://github.com/Pooksoft/PooksoftAlphaVantageDataStore.jl) packages. 
 
-### Installation and Requirements
+## Installation and Requirements
 ``PooksoftOptionsKit.jl`` requires [Julia 1.5.x](https://julialang.org/downloads/) or above.
 ``PooksoftOptionsKit.jl`` is organized as a [Julia](http://julialang.org) package which 
 can be installed in the ``package mode`` of Julia. 
@@ -24,7 +24,7 @@ This will [activate](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.activate) ``
 and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_project``. 
 To install other required packages, simply add them using the ``add`` command.
 
-### How do get the code?
+## How do get the code?
 ``PooksoftOptionsKit.jl`` is an open source project, 
 available under a [MIT software license](https://github.com/Pooksoft/PooksoftOptionsKit.jl/blob/master/LICENSE).
 You can download this repository as a [zip file](https://en.wikipedia.org/wiki/Zip_(file_format)), clone or pull it by using the command (from the command-line):
@@ -35,9 +35,9 @@ or
 
 	$ git clone https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
 
-### How do I contribute to this package, or other Serenity packages?
+## How do I contribute to this package, or other Serenity packages?
 [Fork the project](https://guides.github.com/activities/forking/) and go crazy with it!
 Check out [Rob Allen's DevNotes](https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/)
-for a beginner's guide to contributing to a GitHub project.
+for a beginner's guide to contributing to a GitHub project to get started. 
 
 
