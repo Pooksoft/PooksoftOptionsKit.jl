@@ -24,7 +24,7 @@ This will [activate](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.activate) ``
 and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_project``. 
 To install other required packages, simply add them using the ``add`` command.
 
-## How do get the code?
+## How do you get the code?
 ``PooksoftOptionsKit.jl`` is an open source project, 
 available under a [MIT software license](https://github.com/Pooksoft/PooksoftOptionsKit.jl/blob/master/LICENSE).
 You can download this repository as a [zip file](https://en.wikipedia.org/wiki/Zip_(file_format)), clone or pull it by using the command (from the command-line):
@@ -34,6 +34,9 @@ You can download this repository as a [zip file](https://en.wikipedia.org/wiki/Z
 or
 
 	$ git clone https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
+
+and pretty much do anything you want with it. However, if you do pull the code, drop us a 
+[star](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/saving-repositories-with-stars) to keep track of the latest and greatest updates.
 
 ## How do I contribute to this package, or other Serenity packages?
 [Fork the project](https://guides.github.com/activities/forking/) and go crazy with it!
