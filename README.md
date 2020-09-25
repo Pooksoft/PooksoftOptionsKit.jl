@@ -1,16 +1,16 @@
 ![CI](https://github.com/Pooksoft/PooksoftOptionsKit.jl/workflows/CI/badge.svg)
 
 ### Introduction
-``PooksoftOptionsKit.jl`` is a [Julia](https://www.julialang.org) package which computes the time value, profit/loss and probability of success for an arbitrary collection of [American or European](https://en.wikipedia.org/wiki/Option_style#American_and_European_options) options contracts. 
+``PooksoftOptionsKit.jl`` is a [Julia](https://www.julialang.org) package which computes the time value, profit/loss and probability of success for an arbitrary collection of [American or European options contracts](https://en.wikipedia.org/wiki/Option_style#American_and_European_options).
 ``PooksoftOptionsKit.jl`` is a member of the [Project Serenity](http://www.pooksoft.com) collection of packages from [Pooksoft](http://www.pooksoft.com), along with [PooksoftAssetModelingKit.jl](https://github.com/Pooksoft/PooksoftAssetModelingKit.jl) and 
 [PooksoftAlphaVantageDataStore.jl](https://github.com/Pooksoft/PooksoftAlphaVantageDataStore.jl) packages. 
 
 ### Installation and Requirements
-``PooksoftOptionsKit.jl`` requires Julia 1.5.x and above.
+``PooksoftOptionsKit.jl`` requires [Julia 1.5.x](https://julialang.org/downloads/) or above.
 ``PooksoftOptionsKit.jl`` is organized as a [Julia](http://julialang.org) package which 
 can be installed in the ``package mode`` of Julia. 
 
-To install ``PooksoftOptionsKit.jl`` in your project named ``my_project``, 
+To install ``PooksoftOptionsKit.jl`` in your project ``my_project``, 
 start the [Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/index.html) in the root directory of 
 ``my_project`` and enter the ``package mode`` using the ``]`` key (to get back press the ``backspace`` or ``^C`` keys).
 ``Package mode`` is the build in package management system in [Julia](http://julialang.org).
@@ -18,7 +18,7 @@ start the [Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/index.html) 
 Once in package mode prompt enter the commands:
 
     (v1.5) pkg> activate .
-    (v1.5) pkg> add https://github.com/pooksoft/PooksoftOptionsKit.jl.git
+    (v1.5) pkg> add https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
 
 This will [activate](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.activate) the current project, 
 and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_project``. 
