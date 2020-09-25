@@ -27,7 +27,7 @@ To install other required packages, simply add them using the ``add`` command.
 
 ``PooksoftOptionsKit.jl`` is an open source project, 
 available under a [MIT software license](https://github.com/Pooksoft/PooksoftOptionsKit.jl/blob/master/LICENSE).
-You can download this repository as a zip file, clone or pull it by using the command (from the command-line):
+You can download this repository as a [zip file](https://en.wikipedia.org/wiki/Zip_(file_format)), clone or pull it by using the command (from the command-line):
 
 	$ git pull https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
 
