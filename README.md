@@ -35,8 +35,8 @@ or
 
 	$ git clone https://github.com/Pooksoft/PooksoftOptionsKit.jl.git
 
-and pretty much do anything you want with it. However, if you do pull the code, drop us a 
-[star](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/saving-repositories-with-stars) to keep track of the latest and greatest updates.
+and pretty much do anything you want with it. However, if you do pull the code, please drop us a 
+[star](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/saving-repositories-with-stars) so you can keep track of the latest and greatest updates.
 
 ## How do I contribute to this package, or other Serenity packages?
 [Fork the project](https://guides.github.com/activities/forking/) and go crazy with it!
