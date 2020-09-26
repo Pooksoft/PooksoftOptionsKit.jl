@@ -25,7 +25,7 @@ and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_proje
 To install other required packages, simply add them using the ``add`` command.
 
 ## Documentation
-Documentation for the ``PooksoftOptionsKit.jl`` functions can be found [here](https://pooksoft.github.io/PooksoftOptionsKit.jl/build/index.html).
+The documentation for the ``PooksoftOptionsKit.jl`` package can be found [here](https://pooksoft.github.io/PooksoftOptionsKit.jl/build/index.html).
 
 ## How do you get the code?
 ``PooksoftOptionsKit.jl`` is an open source project, 
