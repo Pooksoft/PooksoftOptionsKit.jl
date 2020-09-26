@@ -1,4 +1,4 @@
-# Binary
+# Binary price model
 
 ### Can stuff go here?
 
