@@ -7,7 +7,7 @@ makedocs(sitename="PooksoftOptionsKit",
     pages = [
         "index.md",
         "Option price models" => [
-            "binary.md"
+            "binomial.md"
         ],
         "Profit and loss simulations" => [
             "profit_and_loss.md"
