@@ -24,6 +24,9 @@ This will [activate](https://julialang.github.io/Pkg.jl/v1/api/#Pkg.activate) ``
 and install the ``PooksoftOptionsKit.jl`` package into the context of ``my_project``. 
 To install other required packages, simply add them using the ``add`` command.
 
+## Documentation
+Documentation for the ``PooksoftOptionsKit.jl`` functions can be found [here](https://pooksoft.github.io/PooksoftOptionsKit.jl/build/index.html).
+
 ## How do you get the code?
 ``PooksoftOptionsKit.jl`` is an open source project, 
 available under a [MIT software license](https://github.com/Pooksoft/PooksoftOptionsKit.jl/blob/master/LICENSE).
