@@ -1,4 +1,4 @@
-# Lattice options pricing models
+# Lattice pricing models
 
 ### Background
 The binomial option pricing model is an options valuation method developed by [Cox et al in 1979](https://www.sciencedirect.com/science/article/abs/pii/0304405X79900151?via%3Dihub).
