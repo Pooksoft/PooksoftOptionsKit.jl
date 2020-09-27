@@ -150,6 +150,14 @@ end
 # ----------------------------------------------------------------------------------------------------------- #
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
+
+
+"""
+    option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSTernaryLatticeModel, baseUnderlyingPrice::Float64; 
+        earlyExercise::Bool = false)::PooksoftBase.PSResult
+
+Estimate the price of a contract using a ternary lattice pricing model.
+"""
 function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSTernaryLatticeModel, baseUnderlyingPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 
