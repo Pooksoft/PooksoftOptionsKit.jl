@@ -34,3 +34,19 @@ Options traders may opt to not only hedge delta but also gamma in order to be de
 ```@docs
 gamma
 ```
+
+#### Vega
+Vega represents the rate of change between an option's value and the underlying asset's implied volatility. This is the option's sensitivity to volatility. Vega indicates the amount an option's price changes given a 1-percent change in implied volatility. For example, an option with a Vega of 0.10 indicates the option's value is expected to change by 10 cents if the implied volatility changes by 1-percent.
+
+Because increased volatility implies that the underlying instrument is more likely to experience extreme values, a rise in volatility will correspondingly increase the value of an option. Conversely, a decrease in volatility will negatively affect the value of the option. Vega is at its maximum for at-the-money options that have longer times until expiration.
+
+```@docs
+vega
+```
+
+#### Rho
+Rho represents the rate of change between an option's value and a 1% change in the interest rate. This measures sensitivity to the interest rate. For example, assume a call option has a rho of 0.05 and a price of 1.25 USD. If interest rates rise by 1-percent, the value of the call option would increase to 1.30 USD, all else being equal. The opposite is true for put options. Rho is greatest for at-the-money options with long times until expiration.
+
+```@docs
+rho
+```
