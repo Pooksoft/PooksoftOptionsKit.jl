@@ -1,4 +1,4 @@
-# Greeks
+# Computing the greeks
 
 ### Explanation of th Greeks
 Stuff here.
