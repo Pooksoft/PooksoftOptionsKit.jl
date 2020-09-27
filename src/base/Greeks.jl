@@ -7,6 +7,18 @@
 # riskFreeRate::Float64
 # dividendRate::Float64
 
+"""
+    delta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
+        earlyExercise::Bool = false)::PSResult
+
+Compute the change in the option price for a 1-dollar increase in the underlying stock price
+
+# Arguments
+- `assetSet::Set{PSAbstractAsset}`: A set containing the put and call models involved in this trade. 
+- `parameters::PSBinaryLatticeModel`: A PSBinaryLatticeModel object containing the parameters for the lattice
+- `underlyingAssetPrice::Float64`: Underlying stock price at the time of purchase of the contract
+- `earlyExercise::Bool = false`: Can this option contract be excercised early (true for American options)
+"""
 function delta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 
@@ -40,6 +52,18 @@ function delta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel,
 
 end
 
+"""
+    theta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
+        earlyExercise::Bool = false)::PSResult
+
+Compute the change in the price of the option contract for a one day decrease in the number of days left until expiration
+
+# Arguments
+- `assetSet::Set{PSAbstractAsset}`: A set containing the put and call models involved in this trade. 
+- `parameters::PSBinaryLatticeModel`: A PSBinaryLatticeModel object containing the parameters for the lattice
+- `underlyingAssetPrice::Float64`: Underlying stock price at the time of purchase of the contract
+- `earlyExercise::Bool = false`: Can this option contract be excercised early (true for American options)
+"""
 function theta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
     
@@ -76,6 +100,18 @@ function theta(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel,
     return PSResult(theta)
 end
 
+"""
+    gamma(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
+        earlyExercise::Bool = false)::PSResult
+
+Compute the rate of change of the delta parameter
+
+# Arguments
+- `assetSet::Set{PSAbstractAsset}`: A set containing the put and call models involved in this trade. 
+- `parameters::PSBinaryLatticeModel`: A PSBinaryLatticeModel object containing the parameters for the lattice
+- `underlyingAssetPrice::Float64`: Underlying stock price at the time of purchase of the contract
+- `earlyExercise::Bool = false`: Can this option contract be excercised early (true for American options)
+"""
 function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 
@@ -107,6 +143,20 @@ function gamma(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel,
     return PSResult(gamma)
 end
 
+
+"""
+
+    vega(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
+        earlyExercise::Bool = false)::PSResult
+
+Compute the change in the price of an option contract for a 1-percent increase in the implied volatility
+
+# Arguments
+- `assetSet::Set{PSAbstractAsset}`: A set containing the put and call models involved in this trade. 
+- `parameters::PSBinaryLatticeModel`: A PSBinaryLatticeModel object containing the parameters for the lattice
+- `underlyingAssetPrice::Float64`: Underlying stock price at the time of purchase of the contract
+- `earlyExercise::Bool = false`: Can this option contract be excercised early (true for American options)
+"""
 function vega(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 
@@ -144,6 +194,19 @@ function vega(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, 
     return PSResult(vega)
 end
 
+"""
+
+    rho(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
+        earlyExercise::Bool = false)::PSResult
+
+Compute the change in the price of an option contract for a 1% increase in the risk free rate
+
+# Arguments
+- `assetSet::Set{PSAbstractAsset}`: A set containing the put and call models involved in this trade. 
+- `parameters::PSBinaryLatticeModel`: A PSBinaryLatticeModel object containing the parameters for the lattice
+- `underlyingAssetPrice::Float64`: Underlying stock price at the time of purchase of the contract
+- `earlyExercise::Bool = false`: Can this option contract be excercised early (true for American options)
+"""
 function rho(assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, underlyingAssetPrice::Float64; 
     earlyExercise::Bool = false)::PSResult
 

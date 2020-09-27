@@ -11,6 +11,9 @@ makedocs(sitename="PooksoftOptionsKit",
         ],
         "Profit and loss simulations" => [
             "profit_and_loss.md"
+        ],
+        "The Greeks" => [
+            "greeks.md"
         ]
     ]
 )
