@@ -2,7 +2,7 @@
 
 ### Background
 The Greeks is a term used in the options market to describe the different dimensions of risk involved in taking an options position. These variables are called Greeks because they are typically associated with Greek symbols. 
-Each risk variable is a result of an imperfect assumption or relationship of the option with another underlying variable. Traders use different Greek values, such as [delta](#Delta), theta, and others, to assess options risk and manage option portfolios. 
+Each risk variable is a result of an imperfect assumption or relationship of the option with another underlying variable. Traders use different Greek values, such as [delta](#Delta), [theta](#Theta), and others, to assess options risk and manage option portfolios. 
 
 #### Delta
 Delta represents the rate of change between the option's price and a 1-dollar change in the underlying asset's price. In other words, the price sensitivity of the option relative to the underlying. Delta of a call option has a range between zero and one, while the delta of a put option has a range between zero and negative one. For example, assume an investor is long a call option with a delta of 0.50. Therefore, if the underlying stock increases by 1-dollar, the option's price would theoretically increase by 50 cents.
