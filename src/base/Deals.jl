@@ -22,7 +22,7 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
     for (index,strike) in enumerate(strikePriceArray)
         
         # what is the probability of success for this trade?
-        prob_of_excercise = 1 - itmProbabilityArray[index]
+        prob_of_excercise = itmProbabilityArray[index]
         push!(excerciseProbabilityArray,prob_of_excercise)
 
         # credits -
@@ -36,12 +36,12 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
         # debit -
         debit_value = 0.0
         if (buyer_profit_loss_value>0)
-            debit_value = 100*strike            
+            debit_value = -100*strike            
         end
         push!(debitArray,debit_value)
 
         # expected return -
-        expected_return = prob_of_excercise*(debit_value) + (1-prob_of_excercise)*credit_value
+        expected_return = (1 - prob_of_excercise)*(debit_value) + (prob_of_excercise)*credit_value
         push!(expectedValueArray,expected_return)
     end
 
