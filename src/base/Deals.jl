@@ -30,6 +30,8 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
         credit_value = 100*(contractPriceArray[index])
         push!(creditsArray,credit_value)
 
+        @show (strike,contractPriceArray[index],credit_value)
+
         # buyer P/L -
         buyer_profit_loss_value = -1*credit_value+100*(strike - underlyingPrice)
         push!(buyerPLArray,buyer_profit_loss_value)
