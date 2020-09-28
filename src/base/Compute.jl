@@ -2,16 +2,22 @@
 function _compute_profit_loss_at_expiration(asset::PSAbstractAsset, assetPriceValueArray::Array{Float64,1})::Array{Float64,1}
 
     # initialize -
-    profit_loss_array = Array{Float64,1}()
+    pl_value_array = Array{Float64,1}()
 
     # compute the intrinsic value -
     for (index, asset_price_value) in enumerate(assetPriceValueArray)
-        iv = intrinsic_value(asset,asset_price_value)
-        push!(profit_loss_array,iv)
+        result = intrinsic_value(asset,asset_price_value)
+        if (isa(result.value,Exception) == true)
+            return result
+        end
+        pl_value = result.value.pl_value
+        
+        # grab -
+        push!(pl_value_array,pl_value)
     end
 
     # call -
-    return profit_loss_array
+    return pl_value_array
 end
 
 function _compute_profit_loss_at_expiration(asset::PSAbstractAsset, assetPriceStart::Float64, assetPriceStop::Float64; 

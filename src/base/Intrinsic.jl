@@ -34,7 +34,7 @@ function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Floa
     end
 
     # make a named tuple -
-    named_tuple = (intrinsic_value=iv,payoff_value=pl)
+    named_tuple = (intrinsic_value=iv, pl_value=pl)
 
     # return -
     return PSResult(named_tuple)
@@ -76,7 +76,7 @@ function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float
     end
     
     # make a named tuple -
-    named_tuple = (intrinsic_value=iv,payoff_value=pl)
+    named_tuple = (intrinsic_value=iv, pl_value=pl)
 
     # return -
     return PSResult(named_tuple)
@@ -96,13 +96,13 @@ function intrinsic_value(equityObject::PSEquityAsset, currentPriceValue::Float64
     iv = numberOfShares*(currentPriceValue - purchasePricePerShare)
 
     # make a named tuple -
-    named_tuple = (intrinsic_value=iv,payoff_value=iv)
+    named_tuple = (intrinsic_value=iv, pl_value=iv)
 
     # return -
     return PSResult(named_tuple)
 end
 
-function intrinsic_value(contractSet::Set{PSAbstractAsset},underlyingPriceValue::Float64)::PSResult
+function intrinsic_value(contractSet::Set{PSAbstractAsset}, underlyingPriceValue::Float64)::PSResult
 
     # initialize -
     tmp_iv_array = Float64[]
@@ -126,4 +126,30 @@ function intrinsic_value(contractSet::Set{PSAbstractAsset},underlyingPriceValue:
 
     # return -
     return PSResult{Float64}(total_iv_value)
+end
+
+function profit_loss_value(contractSet::Set{PSAbstractAsset}, underlyingPriceValue::Float64)::PSResult
+    
+    # initialize -
+    tmp_pl_array = Float64[]
+
+    # go through each contract, compute the iv, store -
+    for (index,contract) in enumerate(contractSet)
+
+        # compute -
+        result = intrinsic_value(contract,underlyingPriceValue)
+        if (isa(result.value, Exception) == true)
+            return result
+        end
+        pl_value = result.value.pl_value
+
+        # store -
+        push!(tmp_pl_array,pl_value)
+    end
+
+    # sum -
+    total_pl_value = sum(tmp_pl_array)
+
+    # return -
+    return PSResult{Float64}(total_pl_value)
 end
