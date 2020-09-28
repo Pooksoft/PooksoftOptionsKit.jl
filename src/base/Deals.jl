@@ -17,6 +17,7 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
     debitArray = Array{Float64,1}()
     expectedValueArray = Array{Float64,1}()
     buyerPLArray = Array{Float64,1}()
+    accountBalance = Array{Float64,1}()
 
     # compute data for the trade table -
     for (index,strike) in enumerate(strikePriceArray)
@@ -40,6 +41,10 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
         end
         push!(debitArray,debit_value)
 
+        # compute the seller account balance -
+        balance = credit_value + debit_value + 100*(underlyingPrice - strike)
+        push!(accountBalance,balance)
+
         # expected return -
         expected_return = (1 - prob_of_excercise)*(debit_value) + (prob_of_excercise)*credit_value
         push!(expectedValueArray,expected_return)
@@ -47,7 +52,7 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
 
     # setup the DataFrame -
     df = DataFrame(strike=strikePriceArray,probability_ITM=excerciseProbabilityArray,
-        credit=creditsArray,debit=debitArray,buyer=buyerPLArray,expected=expectedValueArray)
+        credit=creditsArray,debit=debitArray,balance=accountBalance, buyer=buyerPLArray,expected=expectedValueArray)
 
     # return -
     return PSResult{DataFrame}(df)
