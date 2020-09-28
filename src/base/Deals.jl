@@ -2,7 +2,7 @@
 # ----------------------------------------------------------------------------------------------------------- #
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
-function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}, itmProbabilityArray::Array{Float64,1},
+function compute_naked_put_seller_trade_table(assetSet::Set{PSAbstractAsset}, strikePriceArray::Array{Float64,1}, itmProbabilityArray::Array{Float64,1},
     contractPriceArray::Array{Float64,1}, underlyingPrice::Float64)::PSResult
 
     # TODO: need to check to make sure the arrays have the correct data e.g., no negative entries
@@ -33,7 +33,12 @@ function compute_naked_put_seller_trade_table(strikePriceArray::Array{Float64,1}
         @show (strike,contractPriceArray[index],credit_value)
 
         # buyer P/L -
-        buyer_profit_loss_value = -1*credit_value+100*(strike - underlyingPrice)
+        result = intrinsic_value(assetSet,underlyingPrice)
+        if (isa(result.value, Exception) == true)
+            return result
+        end
+        iv_value = result.value
+        buyer_profit_loss_value = -1*credit_value + 100*iv_value
         push!(buyerPLArray,buyer_profit_loss_value)
 
         # debit -
