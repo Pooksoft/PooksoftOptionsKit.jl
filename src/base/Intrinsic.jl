@@ -78,6 +78,8 @@ function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float
     # make a named tuple -
     named_tuple = (intrinsic_value=iv, pl_value=pl)
 
+    @show (currentPriceValue,named_tuple)
+
     # return -
     return PSResult(named_tuple)
 end
