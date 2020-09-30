@@ -1,8 +1,8 @@
 function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Float64)::PSResult
 
     # initialize -
-    iv = 0.0
-    pl = 0.0
+    payoffValue = 0.0
+    profitLossValue = 0.0
     
     # get data from the contract object -
     sense = contract.sense
@@ -18,20 +18,16 @@ function intrinsic_value(contract::PSCallOptionContract, currentPriceValue::Floa
         payoffValue = max(0.0, (currentPriceValue - strikePrice))
         profitLossValue = (payoffValue - premiumValue) 
         
-        # compute the intrinsic value -
-        iv = (contract_multiplier)*(number_of_contracts)*payoffValue
-        pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
-
     elseif (sense == :sell)
         
         # compute the P/L -
         payoffValue = min(0.0,-1.0*(currentPriceValue - strikePrice))
         profitLossValue = (payoffValue + premiumValue) 
-        
-        # compute the intrinsic value -
-        iv = (contract_multiplier)*(number_of_contracts)*payoffValue
-        pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
     end
+
+    # compute the intrinsic value -
+    iv = (contract_multiplier)*(number_of_contracts)*payoffValue
+    pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
 
     # make a named tuple -
     named_tuple = (intrinsic_value=iv, pl_value=pl)
@@ -66,15 +62,12 @@ function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float
         profitLossValue = (payoffValue + premiumValue)
     end
 
-     # compute the intrinsic value -
-     pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
-     iv = (contract_multiplier)*(number_of_contracts)*payoffValue
+    # compute the intrinsic value -
+    pl = (contract_multiplier)*(number_of_contracts)*profitLossValue
+    iv = (contract_multiplier)*(number_of_contracts)*payoffValue
 
-    
     # make a named tuple -
     named_tuple = (intrinsic_value=iv, pl_value=pl)
-
-    @show (currentPriceValue, named_tuple)
 
     # return -
     return PSResult(named_tuple)
