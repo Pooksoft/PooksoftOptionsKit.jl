@@ -11,8 +11,6 @@ function _compute_profit_loss_at_expiration(asset::PSAbstractAsset, assetPriceVa
             return result
         end
         pl_value = result.value.pl_value
-
-        @show (asset_price_value, pl_value)
         
         # grab -
         push!(pl_value_array,pl_value)
