@@ -190,7 +190,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
     final_option_cost_array = Array{Float64,1}()
     d = ones(number_of_time_steps)
     for time_index = 1:number_of_time_steps
-        ΔT = (time_index)*(1/365)
+        ΔT = (time_index)
         d[time_index] = exp(-riskFreeRate*ΔT)
     end
 
