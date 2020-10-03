@@ -14,6 +14,9 @@ function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})
 
     # Wrap -
     a = fit_bounds.param
+
+    @show (X,Y,fit_bounds)
+
     local_model = LocalExpectationRegressionModel(a[1],a[2],a[3],a[4])
 
     # grab the result -
