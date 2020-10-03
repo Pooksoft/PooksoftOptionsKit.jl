@@ -15,8 +15,6 @@ function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})
     # Wrap -
     a = fit_bounds.param
 
-    @show (X,Y,fit_bounds)
-
     local_model = LocalExpectationRegressionModel(a[1],a[2],a[3],0.0)
 
     # grab the result -
@@ -124,8 +122,6 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             option_excercise_reward_table[path_index,end] = value
         end   
 
-        @show option_excercise_reward_table
-
         # so the option cost table
         backward_index_collection = collect(range(number_of_time_steps,step=-1,stop=2))
         for time_index in backward_index_collection
@@ -152,8 +148,6 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
             end
             local_model = result.value
 
-            @show (time_index,Xdata,Ydata,local_model,itm_index_array)
-
             # which paths will have early an early excercise event?
             # lets compare what we would get if we excercised now, versus waiting -
             result = _evaluate_local_regression_model(local_model,Xdata)
@@ -167,8 +161,6 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
                 
                 excercise_value = intrinsic_value_table[itm_index,time_index-1]
                 continuation_value = Ycontinuation[index]
-
-                @show (index,excercise_value,continuation_value)
             
                 if (excercise_value>=continuation_value)
                     option_excercise_reward_table[itm_index,time_index-1] = excercise_value
