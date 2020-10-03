@@ -170,7 +170,7 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
                         option_excercise_reward_table[itm_index,local_time_index] = 0.0
                     end
                 else
-                    option_excercise_reward_table[itm_index,time_index-1] = 0.0
+                    # option_excercise_reward_table[itm_index,time_index-1] = 0.0
                 end
             end
         end
