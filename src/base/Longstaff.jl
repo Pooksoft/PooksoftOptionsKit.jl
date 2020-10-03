@@ -115,19 +115,21 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
         end        
     else
 
-        # What is my d?
-        ΔT = (1.0*timeMultiplier)*(1.0/364.5)
-        d = exp(-1*riskFreeRate*ΔT)
-
         # initialize the last col of the cost table -
         for path_index = 1:number_of_paths
             value = 1.0*(intrinsic_value_table[path_index,end])
             option_excercise_reward_table[path_index,end] = value
         end   
 
+        @show option_excercise_reward_table
+
         # so the option cost table
         backward_index_collection = collect(range(number_of_time_steps,step=-1,stop=2))
         for time_index in backward_index_collection
+
+             # What is my d?
+            ΔT = (1.0*timeMultiplier)
+            d = exp(-1*riskFreeRate*ΔT)
 
             # get all the Y's for the regression -
             Y = intrinsic_value_table[:,time_index]
@@ -146,6 +148,8 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
                 return result
             end
             local_model = result.value
+
+            @show (time_index,Xdata,Ydata,local_model,itm_index_array)
 
             # which paths will have early an early excercise event?
             # lets compare what we would get if we excercised now, versus waiting -
