@@ -160,6 +160,8 @@ function _calculate_options_cost_table(contractSet::Set{PSAbstractAsset}, underl
                 
                 excercise_value = intrinsic_value_table[itm_index,time_index-1]
                 continuation_value = Ycontinuation[index]
+
+                @show (index,excercise_value,continuation_value)
             
                 if (excercise_value>=continuation_value)
                     option_excercise_reward_table[itm_index,time_index-1] = excercise_value
