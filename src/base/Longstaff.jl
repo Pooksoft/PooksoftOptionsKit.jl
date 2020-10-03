@@ -2,20 +2,17 @@
 function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
 
     # setup the model -
-    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2+p[4]*x^3
+    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2
 
     # setup the fit -
-    p0 = [-1.0, 3.0, -2.0, 1.0]
-    lb = [-10.0, -10.0, -10.0]
-    ub = [10.0, 10.0, 10.0]
-
+    p0 = [-1.0, 3.0, -2.0]
     # run the fit -
     fit_bounds = curve_fit(model, X, Y, p0)
 
     # Wrap -
     a = fit_bounds.param
 
-    local_model = LocalExpectationRegressionModel(a[1],a[2],a[3],a[4])
+    local_model = LocalExpectationRegressionModel(a[1], a[2], a[3], 0.0)
 
     # grab the result -
     return PSResult(local_model)
