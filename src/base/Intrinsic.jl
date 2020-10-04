@@ -118,7 +118,7 @@ function intrinsic_value(contractSet::Set{PSAbstractAsset}, underlyingPriceValue
     return PSResult{Float64}(total_iv_value)
 end
 
-function profit_loss_value(contractSet::Set{PSAbstractAsset}, underlyingPriceValue::Float64)::PSResult
+function compute_profit_loss_value(contractSet::Set{PSAbstractAsset}, underlyingPriceValue::Float64)::PSResult
     
     # initialize -
     tmp_pl_array = Float64[]
