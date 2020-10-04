@@ -5,7 +5,7 @@ function _obj_function_breakeven(x,contractSet::Set{PSAbstractAsset})
     underlyingPrice = x[1]
 
     # what is the PL value at this price?
-    result = profit_loss_value(contractSet,underlyingPrice)
+    result = compute_profit_loss_value(contractSet,underlyingPrice)
     if (isa(result.value,Exception) == true)
         return result
     end
