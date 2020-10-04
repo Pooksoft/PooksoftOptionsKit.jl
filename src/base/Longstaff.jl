@@ -2,10 +2,11 @@
 function _lsqfit_local_regression_model(X::Array{Float64,1},Y::Array{Float64,1})::PSResult
 
     # setup the model -
-    @. model(x, p) = p[1]*exp(-x/2)+p[2]*exp(-x/2)*(1-x)+p[3]*exp(-x/2)*(1-2*x+(x^2)/2)
+    @. model(x, p) = p[1]+p[2]*x+p[3]*x^2
 
     # setup the fit -
     p0 = [-1.0, 3.0, -2.0]
+    
     # run the fit -
     fit_bounds = curve_fit(model, X, Y, p0)
 
