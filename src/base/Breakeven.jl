@@ -12,7 +12,7 @@ function _obj_function_breakeven(x,contractSet::Set{PSAbstractAsset})
     pl_value = result.value
 
     # compute the objective function -
-    obj_value = pl_value^2+10000000*max(0,-1*underlyingPrice)
+    obj_value = (pl_value^2)+10000000*max(0.0,-1*underlyingPrice)
 
     # return -
     return obj_value

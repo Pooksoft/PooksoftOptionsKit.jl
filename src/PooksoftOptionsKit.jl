@@ -4,6 +4,7 @@ module PooksoftOptionsKit
 include("Include.jl")
 
 # export methods -
+export compute_profit_loss_value
 export compute_breakeven_price
 export compute_option_profit_and_loss_at_expiration
 export build_simulation_lattice_data_structure
