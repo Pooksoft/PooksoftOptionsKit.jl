@@ -20,7 +20,10 @@ end
 # ----------------------------------------------------------------------------------------------------------- #
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
-function compute_breakeven_price(contractSet::Set{PSAbstractAsset})::PSResult
+function compute_breakeven_price(contractSet::Set{PSAbstractAsset}; initialPrice::Float64=1.0)::PSResult
+
+    # setup initial price -
+    xinitial = [initialPrice]
 
     # setup the objective function -
     OF(p) = _obj_function_breakeven(p, contractSet)
