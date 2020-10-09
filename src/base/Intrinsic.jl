@@ -55,6 +55,7 @@ function intrinsic_value(contract::PSPutOptionContract, currentPriceValue::Float
         # compute the P/L -
         payoffValue = max(0.0, (strikePrice - currentPriceValue))
         profitLossValue = (payoffValue - premiumValue) 
+        
     elseif (sense == :sell)
 
         # compute the P/L -
