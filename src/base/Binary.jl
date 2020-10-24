@@ -91,7 +91,7 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
 end
 
 function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Float64,1}, latticeModel::PSBinaryLatticeModel; 
-    earlyExcercise::Bool = false, numberOfLevels::Int64 = 100)::PSResult
+    earlyExcercise::Bool = true, numberOfLevels::Int64 = 100)::PSResult
 
     # initialize -
     contract_price_array = copy(intrinsicValueArray)
@@ -127,6 +127,9 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
             contract_price_array[parent_node_index] = contract_price
         else
             excercise_value = contract_price_array[parent_node_index]
+
+            @show excercise_value,contract_price
+
             contract_price_array[parent_node_index] = max(excercise_value,contract_price)
         end
     end
@@ -149,7 +152,7 @@ end
 Estimate the price of a contract using a binary lattice pricing model.
 """
 function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
-    earlyExercise::Bool = false, numberOfLevels::Int64 = 100)::PooksoftBase.PSResult
+    earlyExercise::Bool = true, numberOfLevels::Int64 = 100)::PooksoftBase.PSResult
 
     # initialize -
     option_contract_price = 0.0
