@@ -56,7 +56,7 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
 
     # compute up and down perturbations -
     numberOfLevels = (timeToExercise + 1)
-    Δt = (timeToExercise/numberOfLevels)    
+    Δt = (1.0)    
     U = exp(volatility * √Δt)
     D = 1 / U
 
@@ -103,7 +103,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
 
     # compute up and down perturbations -
     numberOfLevels = (timeToExercise + 1)
-    Δt = (timeToExercise/numberOfLevels)   
+    Δt = (1.0)   
     U = exp(volatility * √Δt)
     D = 1 / U
     p = (exp((riskFreeRate - dividendRate)*Δt) - D)/(U - D)
