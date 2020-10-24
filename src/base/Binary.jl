@@ -52,7 +52,7 @@ function _build_binary_lattice_intrinsic_value_array(contractSet::Set{PSAbstract
     return PSResult{Array{Float64,1}}(intrinsic_value_array)
 end
 
-function _build_binary_lattice_underlying_price_array(basePrice::Float64, volatility::Float64, timeToExercise::Int64;
+function _build_binary_lattice_underlying_price_array(basePrice::Float64, volatility::Float64, timeToExercise::Float64;
     numberOfLevels::Int64 = 100)::PSResult
 
     # compute up and down perturbations -
