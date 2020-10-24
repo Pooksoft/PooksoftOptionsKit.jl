@@ -1,5 +1,5 @@
 # --- PRIVATE METHODS --------------------------------------------------------------------------------------- #
-function _compute_index_array(numberOfLevels::Int64)
+function _compute_crr_index_array(numberOfLevels::Int64)
     
     # ok, so lets build an index array -
     number_items_per_level = [(i+1) for i=0:numberOfLevels]
@@ -13,15 +13,37 @@ function _compute_index_array(numberOfLevels::Int64)
     end
 
     N = sum(number_items_per_level[1:(numberOfLevels-1)])
-    index_array = Array{Int64,2}(undef,N,4)
+    index_array = Array{Int64,2}(undef,N,3)
     for row_index = 1:N
     
-        index_array[row_index,1] = tmp_array[row_index]
-        index_array[row_index,2] = row_index
-        index_array[row_index,3] = row_index + 1 + tmp_array[row_index]
-        index_array[row_index,4] = row_index + 2 + tmp_array[row_index]
+        #index_array[row_index,1] = tmp_array[row_index]
+        index_array[row_index,1] = row_index
+        index_array[row_index,2] = row_index + 1 + tmp_array[row_index]
+        index_array[row_index,3] = row_index + 2 + tmp_array[row_index]
     end
 
+    return index_array
+end
+
+function _compute_full_binomial_index_array(numberOfLevels::Int64)
+
+    number_of_elements = (2^(Int(numberOfLevels))) - 1
+    index_array = Array{Int64,2}(undef,number_of_elements,3)
+    
+    # populate the index array -
+    for index = 1:number_of_elements
+
+        # compute the child indexs -
+        left_child_index = 2*(index - 1) + 2
+        right_child_index = 2*(index - 1) + 3
+        
+        # grab and go -
+        index_array[index,1] = index
+        index_array[index,2] = left_child_index
+        index_array[index,3] = right_child_index
+    end
+
+    # return -
     return index_array
 end
 
@@ -61,9 +83,9 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
     D = 1 / U
 
     # compute the index array =
-    index_array = _compute_index_array(numberOfLevels);
+    index_array = _compute_full_binomial_index_array(numberOfLevels);
     max_element = index_array[end,end]
-    N = index_array[end,2]
+    N = index_array[end,1]
 
     # compute price array -
     priceArray = zeros(max_element)
@@ -71,9 +93,9 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
     for row_index = 1:N
 
         # parent index -
-        parent_index = index_array[row_index,2]
-        left_child_index = index_array[row_index,3]
-        right_child_index = index_array[row_index,4]
+        parent_index = index_array[row_index,1]
+        left_child_index = index_array[row_index,2]
+        right_child_index = index_array[row_index,3]
 
         # get the basePrice -
         basePrice = priceArray[parent_index]
@@ -110,16 +132,16 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     DF = exp(-riskFreeRate*Δt)
 
     # create a index table -
-    index_table = _compute_index_array(numberOfLevels)
-    N = index_table[end,2]
+    index_table = _compute_full_binomial_index_array(numberOfLevels)
+    N = index_table[end,1]
 
     # ok, so now lets compute the value for the nodes -
     for compute_index = 1:N
         
         # get the indexs -
-        parent_node_index = index_table[compute_index,2]
-        child_left_index = index_table[compute_index,3]
-        child_right_index = index_table[compute_index,4]
+        parent_node_index = index_table[compute_index,1]
+        child_left_index = index_table[compute_index,2]
+        child_right_index = index_table[compute_index,3]
 
         # compute -
         contract_price = DF*(p*contract_price_array[child_left_index]+(1-p)*contract_price_array[child_right_index])
@@ -127,9 +149,6 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
             contract_price_array[parent_node_index] = contract_price
         else
             excercise_value = contract_price_array[parent_node_index]
-
-            @show excercise_value,contract_price
-
             contract_price_array[parent_node_index] = max(excercise_value,contract_price)
         end
     end
