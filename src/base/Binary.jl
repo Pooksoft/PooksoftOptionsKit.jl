@@ -83,7 +83,7 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
     D = 1 / U
 
     # compute the index array =
-    index_array = _compute_full_binomial_index_array(numberOfLevels);
+    index_array = _compute_crr_index_array(numberOfLevels);
     max_element = index_array[end,end]
     N = index_array[end,1]
 
@@ -132,7 +132,7 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     DF = exp(-riskFreeRate*Δt)
 
     # create a index table -
-    index_table = _compute_full_binomial_index_array(numberOfLevels)
+    index_table = _compute_crr_index_array(numberOfLevels)
     N = index_table[end,1]
 
     # ok, so now lets compute the value for the nodes -
