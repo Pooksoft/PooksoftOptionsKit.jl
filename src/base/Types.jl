@@ -81,7 +81,7 @@ mutable struct PSBinaryLatticeModel <: PSAbstractLatticeModel
 
     # data -
     volatility::Float64
-    timeToExercise::Int64
+    timeToExercise::Float64
     riskFreeRate::Float64
     dividendRate::Float64
 
