@@ -1,4 +1,30 @@
 # --- PRIVATE METHODS --------------------------------------------------------------------------------------- #
+function _compute_index_array(numberOfLevels::Int64)
+    
+    # ok, so lets build an index array -
+    number_items_per_level = [(i+1) for i=0:numberOfLevels]
+    tmp_array = Array{Int64,1}()
+    theta = 0
+    for value in number_items_per_level
+        for index = 1:value
+            push!(tmp_array,theta)
+        end
+        theta = theta + 1
+    end
+
+    N = sum(number_items_per_level[1:(numberOfLevels-1)])
+    index_array = Array{Int64,2}(undef,N,4)
+    for row_index = 1:N
+    
+        index_array[row_index,1] = tmp_array[row_index]
+        index_array[row_index,2] = row_index
+        index_array[row_index,3] = row_index + 1 + tmp_array[row_index]
+        index_array[row_index,4] = row_index + 2 + tmp_array[row_index]
+    end
+
+    return index_array
+end
+
 # array based -
 function _build_binary_lattice_intrinsic_value_array(contractSet::Set{PSAbstractAsset}, binaryPriceArray::Array{Float64,1})::PSResult
 
@@ -34,33 +60,30 @@ function _build_binary_lattice_underlying_price_array(basePrice::Float64, volati
     U = exp(volatility * √Δt)
     D = 1 / U
 
-    # compute price array -
-    number_of_elements = (2^(Int(numberOfLevels))) - 1
-    priceArray = zeros(number_of_elements)
-    priceArray[1] = basePrice
+    # compute the index array =
+    index_array = _compute_index_array(numberOfLevels);
+    max_element = index_array[end,end]
+    N = index_array[end,2]
 
-    # populate the prive array -
-    for index = 1:number_of_elements
+    # compute price array -
+    priceArray = zeros(max_element)
+    priceArray[1] = basePrice
+    for row_index = 1:N
+
+        # parent index -
+        parent_index = index_array[row_index,2]
+        left_child_index = index_array[row_index,3]
+        right_child_index = index_array[row_index,4]
 
         # get the basePrice -
-        basePrice = priceArray[index]
+        basePrice = priceArray[parent_index]
 
         # compute the prices -
         down_price = basePrice*D
+        priceArray[right_child_index] = down_price
+        
         up_price = basePrice*U
-    
-        # add the prices to the array -
-        left_index = 2*(index - 1) + 2
-        right_index = 2*(index - 1) + 3
-
-        # note - we need to check that we don't write into the array past the end
-        if (left_index<=number_of_elements)
-            priceArray[left_index] = up_price
-        end
-
-        if (right_index<=number_of_elements)
-            priceArray[right_index] = down_price
-        end
+        priceArray[left_child_index] = up_price
     end
 
     # return the price array -
@@ -87,29 +110,16 @@ function _build_binary_lattice_option_value_array(intrinsicValueArray::Array{Flo
     DF = exp(-riskFreeRate*Δt)
 
     # create a index table -
-    number_of_elements = (2^(Int(numberOfLevels)-1)) - 1
-    index_table = zeros(number_of_elements,3)
-    backwards_index_array = range(number_of_elements,step=-1,stop=1) |> collect
-    for (forward_index, backward_index) in enumerate(backwards_index_array)
-        
-        # add the prices to the array -
-        left_index = 2*(backward_index - 1) + 2
-        right_index = 2*(backward_index - 1) + 3
-    
-        # populate the index table -
-        index_table[forward_index,1] = backward_index
-        index_table[forward_index,2] = left_index
-        index_table[forward_index,3] = right_index
-    end
-
+    index_table = _compute_index_array(numberOfLevels)
+    N = index_table[end,2]
 
     # ok, so now lets compute the value for the nodes -
-    for compute_index = 1:number_of_elements
+    for compute_index = 1:N
         
         # get the indexs -
-        parent_node_index = Int(index_table[compute_index,1])
-        child_left_index = Int(index_table[compute_index,2])
-        child_right_index = Int(index_table[compute_index,3])
+        parent_node_index = index_table[compute_index,2]
+        child_left_index = index_table[compute_index,3]
+        child_right_index = index_table[compute_index,4]
 
         # compute -
         contract_price = DF*(p*contract_price_array[child_left_index]+(1-p)*contract_price_array[child_right_index])
