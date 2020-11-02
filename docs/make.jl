@@ -2,7 +2,7 @@ using PooksoftOptionsKit
 using Documenter
 
 # call to make docs -
-makedocs(sitename="PooksoftOptionsKit",
+makedocs(sitename="PooksoftOptionsKit.jl",
 
     pages = [
         "index.md",
