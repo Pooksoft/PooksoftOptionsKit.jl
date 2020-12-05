@@ -164,6 +164,40 @@ end
 
 # --- PUBLIC METHODS ---------------------------------------------------------------------------------------- #
 
+function compute_underlying_price_distribution(timeStepIndex::Int64,latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64, 
+    movementFunction::Function)::PooksoftBase.PSResult
+
+    # initialize -
+    priceDistributionArray = Array{Float64,2}(undef,(timeStepIndex+1), 4)
+    riskFreeRate = latticeModel.riskFreeRate
+    kIndexVector = range(0,stop=timeStepIndex,step=1) |> collect
+
+    # compute the up and downmove values -
+    (u,d) = movementFunction(latticeModel)
+
+    # compute the probability p of an *up* move -
+    p = ((1 + riskFreeRate) - d)/(u - d)
+
+    # main loop -
+    for (index,k) in enumerate(kIndexVector)
+
+        # compute the price -
+        price = baseUnderlyingPrice*(u^k)*(d^(timeStepIndex - k))
+
+        # compute the probability -
+        prob = binomial(timeStepIndex,k)*(p^k)*((1 - p)^(timeStepIndex-k))
+
+        # package -
+        priceDistributionArray[index,1] = timeStepIndex
+        priceDistributionArray[index,2] = k
+        priceDistributionArray[index,3] = prob
+        priceDistributionArray[index,4] = price
+    end
+    
+    # return -
+    return PSResult{Array{Float64,2}}(priceDistributionArray)
+end
+
 """
     option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
         earlyExercise::Bool = false)::PooksoftBase.PSResult
@@ -171,7 +205,7 @@ end
 Estimate the price of a contract using a binary lattice pricing model.
 """
 function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
-    earlyExercise::Bool = true, numberOfLevels::Int64 = 100)::PooksoftBase.PSResult
+    earlyExercise::Bool = true)::PooksoftBase.PSResult
 
     # initialize -
     option_contract_price = 0.0
@@ -179,6 +213,7 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     # we need to get some stuff from the lattice model -
     volatility = latticeModel.volatility
     timeToExercise = latticeModel.timeToExercise
+    numberOfLevels = latticeModel.numberOfLevels
 
     # compute the price array -
     result = _build_binary_lattice_underlying_price_array(baseUnderlyingPrice, volatility, timeToExercise; 

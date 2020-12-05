@@ -12,6 +12,7 @@ export build_binary_lattice_data_structure
 export build_ternary_lattice_data_structure
 export build_simulation_contract_set
 export build_simulation_price_array
+export compute_underlying_price_distribution
 
 # methods for pricing options (uses binary tree)
 export option_contract_price

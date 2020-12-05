@@ -84,9 +84,10 @@ mutable struct PSBinaryLatticeModel <: PSAbstractLatticeModel
     timeToExercise::Float64
     riskFreeRate::Float64
     dividendRate::Float64
+    numberOfLevels::Int64
 
-    function PSBinaryLatticeModel(volatility,timeToExercise,riskFreeRate,dividendRate)
-        this = new(volatility,timeToExercise,riskFreeRate,dividendRate)
+    function PSBinaryLatticeModel(volatility,timeToExercise,riskFreeRate,dividendRate; numberOfLevels = 10)
+        this = new(volatility,timeToExercise,riskFreeRate,dividendRate, numberOfLevels)
     end
 
 end
