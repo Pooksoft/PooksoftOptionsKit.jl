@@ -20,8 +20,6 @@ function movement(latticeModel::PSBinaryLatticeModel)
     return (U,D)
 end
 
-
-
 # setup the binary lattice model -
 volatility = 0.54   
 timeToExercise = (1.0/365.0)
@@ -31,7 +29,7 @@ numberOfLevels = 10
 binary_lattice_model = PSBinaryLatticeModel(volatility, timeToExercise, riskFreeRate,dividendRate; numberOfLevels=numberOfLevels)
 
 # compute prob distribution -
-timeStepIndex = 21
+timeStepIndex = 14
 latticeModel = binary_lattice_model
 baseUnderlyingPrice = 47.25
 movementFunction = movement
