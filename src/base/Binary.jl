@@ -205,7 +205,7 @@ end
 Estimate the price of a contract using a binary lattice pricing model.
 """
 function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
-    earlyExercise::Bool = true)::PooksoftBase.PSResult
+    earlyExercise::Bool = true, numberOfLevels::Int64 = 100)::PooksoftBase.PSResult
 
     # initialize -
     option_contract_price = 0.0
@@ -213,7 +213,6 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     # we need to get some stuff from the lattice model -
     volatility = latticeModel.volatility
     timeToExercise = latticeModel.timeToExercise
-    numberOfLevels = latticeModel.numberOfLevels
 
     # compute the price array -
     result = _build_binary_lattice_underlying_price_array(baseUnderlyingPrice, volatility, timeToExercise; 
@@ -244,4 +243,6 @@ function option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::
     # return -
     return PSResult(results_tuple)
 end
+
+
 # ----------------------------------------------------------------------------------------------------------- #
