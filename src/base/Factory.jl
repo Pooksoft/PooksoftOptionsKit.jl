@@ -113,42 +113,26 @@ function build_simulation_contract_set(pathToSimulationFile::String)::PSResult
     return build_simulation_contract_set(simulation_dictionary)
 end
 
-function build_simulation_lattice_data_structure(pathToSimulationFile::String)::PSResult
-
-    # TODO: check - is this a legit path -
-
-    # load the experimet file -
-    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
-
-    # grab the lattice parameters -
-    lattice_parameters = simulation_dictionary["underlying_model_parameters"]
-    number_of_levels = lattice_parameters["number_of_levels"]
-    implied_volatility = lattice_parameters["price_volatility"]
-    days_to_expiration = lattice_parameters["days_to_expiration"]
-    risk_free_rate = lattice_parameters["price_growth_rate"]
-    dividend_rate = lattice_parameters["dividend_rate"]
-
-    # build lattice object -
-    option_parameters = PSOptionKitPricingParameters(implied_volatility, (days_to_expiration/365.0), number_of_levels, 
-        risk_free_rate, dividend_rate)
-
-    # return -
-    return PSResult(option_parameters)
-end
-
+# -- Binary ---
 function build_binary_lattice_data_structure(pathToSimulationFile::String)::PSResult
 
     # TODO: check - is this a legit path -
 
     # load the experimet file -
-    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+    dictionary = JSON.parsefile(pathToSimulationFile)
+
+    # go -
+    return build_binary_lattice_data_structure(dictionary)
+end
+
+function build_binary_lattice_data_structure(dictionary::Dict{String,Any})::PSResult
 
     # check - do we have the correct keys -
     main_key = "binary_lattice_model_parameters"
-    if (haskey(simulation_dictionary,main_key) == false)
+    if (haskey(dictionary,main_key) == false)
         return PSError(ArgumentError("binary lattice specification is missing the $(main_key) key"))
     end
-    lattice_parameters = simulation_dictionary[main_key]
+    lattice_parameters = dictionary[main_key]
 
     # check the other keys -
     # volatility -
@@ -186,19 +170,26 @@ function build_binary_lattice_data_structure(pathToSimulationFile::String)::PSRe
     return PSResult(option_parameters)
 end
 
+# -- Ternary helper methods -
 function build_ternary_lattice_data_structure(pathToSimulationFile::String)::PSResult
 
     # TODO: check - is this a legit path -
 
-    # load the experimet file -
-    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+    # load the markey file -
+    dictionary = JSON.parsefile(pathToSimulationFile)
+
+    # go -
+    return build_ternary_lattice_data_structure(dictionary)
+end
+
+function build_ternary_lattice_data_structure(dictionary::Dict{String,Any})::PSResult
 
     # check - do we have the correct keys -
     main_key = "ternary_lattice_model_parameters"
-    if (haskey(simulation_dictionary,main_key) == false)
+    if (haskey(dictionary,main_key) == false)
         return PSError(ArgumentError("binary lattice specification is missing the $(main_key) key"))
     end
-    lattice_parameters = simulation_dictionary[main_key]
+    lattice_parameters = dictionary[main_key]
 
     # check the other keys -
     # volatility -
@@ -236,15 +227,22 @@ function build_ternary_lattice_data_structure(pathToSimulationFile::String)::PSR
     return PSResult(option_parameters)
 end
 
+# -- Price range helper methods -
 function build_simulation_price_array(pathToSimulationFile::String)::PSResult
 
     # TODO: check - is this a legit path -
 
-    # load the experimet file -
-    simulation_dictionary = JSON.parsefile(pathToSimulationFile)
+    # load the range file -
+    dictionary = JSON.parsefile(pathToSimulationFile)
+
+    # go -
+    return build_simulation_price_array(dictionary)
+end
+
+function build_simulation_price_array(dictionary::Dict{String,Any})::PSResult
 
     # grab the asset_price_array parameters -
-    asset_price_parameters = simulation_dictionary["underlying_price_simulation_range"]
+    asset_price_parameters = dictionary["underlying_price_simulation_range"]
     price_start = asset_price_parameters["underlying_price_start"]
     price_stop = asset_price_parameters["underlying_price_stop"]
     number_of_steps = asset_price_parameters["number_of_steps"]

@@ -1,19 +1,26 @@
 # -- PRIVATE FUNCTIONS ------------------------------------------- #
-function _iv_objective_function(x, assetSet::Set{PSAbstractAsset}, parameters::PSOptionKitPricingParameters, baseAssetPriceValue::Float64, optionPriceValue::Float64)
+function _iv_objective_function(x, assetSet::Set{PSAbstractAsset}, parameters::PSBinaryLatticeModel, baseAssetPriceValue::Float64, optionPriceValue::Float64)
+
+    volatility::Float64
+    timeToExercise::Float64
+    riskFreeRate::Float64
+    dividendRate::Float64
+    numberOfLevels::Int64
 
     # create a new paramter w/new volatility -
     perturbedVolatility = x[1]
-    perturbedParameters = PSOptionKitPricingParameters(perturbedVolatility, parameters.timeToExercise, parameters.numberOfLevels,
-        parameters.riskFreeRate, parameters.dividendRate)
+    perturbedLatticeModel = PSBinaryLatticeModel(perturbedVolatility, parameters.timeToExercise, parameters.riskFreeRate, 
+        parameters.dividendRate; numberOfLevels=parameters.numberOfLevels)
 
-    # build the pricing tree -
-    tree = build_binary_price_tree(assetSet, perturbedParameters, baseAssetPriceValue)
+    #= We are calling:
+    option_contract_price(contractSet::Set{PSAbstractAsset}, latticeModel::PSBinaryLatticeModel, baseUnderlyingPrice::Float64; 
+        earlyExercise::Bool = true)::PooksoftBase.PSResult
+    =#
 
     # re-compute the option price -
-    result = option_contract_price(tree, perturbedParameters)
-
-    # get the estimated value -
-    estimatedPriceValue = result.value
+    result = option_contract_price(assetSet, perturbedLatticeModel, baseAssetPriceValue)
+    results_tuple = result.value
+    estimatedPriceValue = results_tuple.cost_calculation_result.option_contract_price_array[1];
 
     # compute the error -
     error_term = (optionPriceValue - estimatedPriceValue)
@@ -24,7 +31,7 @@ end
 # ---------------------------------------------------------------- #
 
 # -- PUBLIC FUNCTIONS -------------------------------------------- #
-function estimate_implied_volatility(contract::PSAbstractAsset, parameters::PSOptionKitPricingParameters, baseAssetPriceValue::Float64; 
+function estimate_implied_volatility(contract::PSAbstractAsset, parameters::PSBinaryLatticeModel, baseAssetPriceValue::Float64; 
     earlyExercise::Bool = false)
 
     # setup asset set -

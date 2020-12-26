@@ -15,20 +15,6 @@ struct PSEquityAsset <: PSAbstractAsset
     end
 end
 
-mutable struct PSOptionKitPricingParameters
-
-    # data -
-    volatility::Float64
-    timeToExercise::Float64
-    numberOfLevels::Int64
-    riskFreeRate::Float64
-    dividendRate::Float64
-
-    function PSOptionKitPricingParameters(volatility,timeToExercise,numberOfLevels,riskFreeRate,dividendRate)
-        this = new(volatility,timeToExercise,numberOfLevels,riskFreeRate,dividendRate)
-    end
-end
-
 struct PSCallOptionContract <: PSAbstractAsset
 
     # data -
