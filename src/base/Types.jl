@@ -75,7 +75,6 @@ mutable struct PSBinaryLatticeModel <: PSAbstractLatticeModel
     function PSBinaryLatticeModel(volatility,timeToExercise,riskFreeRate,dividendRate; numberOfLevels = 10)
         this = new(volatility,timeToExercise,riskFreeRate,dividendRate, numberOfLevels)
     end
-
 end
 
 mutable struct PSTernaryLatticeModel <: PSAbstractLatticeModel
